@@ -39,7 +39,7 @@ const DueDateCalculator = () => {
         dataFormat: 'application/json',
       },
     });
-    console.log('Pregnancy data stored in DWN', await record.data.text(), await record)
+    console.log('Pregnancy data stored in DWN', await record.data.text(), record)
   };
 
 
@@ -53,7 +53,7 @@ const DueDateCalculator = () => {
       dueDate = moment(date);
     }
 
-    const weeksPregnant = moment().diff(dueDate.subtract(280, 'days'), 'weeks');
+    const weeksPregnant = moment().diff(moment(dueDate).subtract(280, 'days'), 'weeks');
     const trimester = weeksPregnant < 13 ? 1 : weeksPregnant < 28 ? 2 : 3;
 
     setResult({
