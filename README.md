@@ -27,7 +27,7 @@ npm run dev
 - Web5 SDK
 
 ## How do I implement Web5?
-Check out `http://localhost:3000/DueDateCalculator` and the file `src/pages/DueDateCalculator.js` for a demonstration. This takes three values (dueDate, trimester, and weeksPregnant) and stores them in a Decentralized Web Node. 
+Check out `http://localhost:3000/DueDateCalculator` or `https://luna-focus.vercel.app/DueDateCalculator` and the file `src/pages/DueDateCalculator.js` for a demonstration. This takes three values (dueDate, trimester, and weeksPregnant) and stores them in a Decentralized Web Node. 
 ```js
   const storePregnancyDataInDWN = async (dueDate, weeks, trimester) => {
     if (!web5 || !userDid) return;
