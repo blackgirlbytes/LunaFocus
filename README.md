@@ -16,6 +16,11 @@ In your terminal, run the following command:
 npm run dev
 ```
 
+ ### To contribute
+ - Fork the project
+ - Clone the project
+ - Open a PR to merge changes from your fork to this main branch/repo
+
 ## Tech Stack
 - Next.js / React
 - Tailwind CSS
