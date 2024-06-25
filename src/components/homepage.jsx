@@ -29,38 +29,6 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 export function Homepage() {
   return (
     (<div className="flex flex-col min-h-[100dvh]">
-      <header className="px-4 lg:px-6 h-14 flex items-center bg-[#E6E6FA] shadow-md">
-        <Link href="#" className="flex items-center justify-center" prefetch={false}>
-          <BabyIcon className="h-6 w-6 text-[#000080]" />
-          <span className="sr-only">LunaFocus</span>
-        </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link
-            href="#"
-            className="text-sm font-medium hover:text-[#000080] text-[#333333]"
-            prefetch={false}>
-            Features
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium hover:text-[#000080] text-[#333333]"
-            prefetch={false}>
-            Privacy
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium hover:text-[#000080] text-[#333333]"
-            prefetch={false}>
-            About
-          </Link>
-          <Link
-            href="#"
-            className="text-sm font-medium hover:text-[#000080] text-[#333333]"
-            prefetch={false}>
-            Contact
-          </Link>
-        </nav>
-      </header>
       <main className="flex-1">
         <section className="w-full py-6 md:py-12 lg:py-16 xl:py-24 bg-[#FFFFFF]">
           <div className="container px-4 md:px-6 mx-auto max-w-[1200px]">
@@ -278,28 +246,6 @@ export function Homepage() {
       </footer>
     </div>)
   );
-}
-
-function BabyIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 12h.01" />
-      <path d="M15 12h.01" />
-      <path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5" />
-      <path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1" />
-    </svg>
-  )
 }
 
 function HeartIcon(props) {
