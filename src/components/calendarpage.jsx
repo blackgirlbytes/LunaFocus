@@ -1,51 +1,50 @@
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useState } from "react";
+import Period from "@/components/period"
+import { PeriodDialog } from "@/components/period-dialog"
 
 // TODO: Read events from DWN
 const startingEvents = [
-  { title: 'event 1', date: '2024-06-23' },
-  { title: 'event 2', date: '2024-06-24' }
+  { title: 'event 1', date: '2024-06-12' },
+  { title: 'event 2', date: '2024-06-14' }
 ]
+
+const formatDateForCalendar = (date) => date.toISOString().split('T')[0]
 
 export function CalendarPage() {
   const [events, setEvents] = useState(startingEvents);
-
-  // TODO: Delete me later. For demo purposes
-  function getRandomJuneDate() {
-    const year = 2024;
-    const month = 6; // June
-    const minDay = 1;
-    const maxDay = 30;
-
-    // Generate a random day in June
-    const day = Math.floor(Math.random() * (maxDay - minDay + 1)) + minDay;
-
-    // Format the date as "YYYY-MM-DD"
-    const formattedDay = day.toString().padStart(2, '0'); // Ensure two digits for the day
-    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${formattedDay}`;
-
-    return formattedDate;
-  }
+  const [periodStartDate, setPeriodStartDate] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState('Dialog');
+  const [isOpen, setIsOpen] = useState(false);
+  const [dialogEvent, setDialogEvent] = useState(null); // string
 
   // TODO: Replace with data from the modal submission
-  function addEvent() {
-    console.log("Adding an event");
+  function addEvent(title, date) {
+    console.log("Adding a specific event");
+    console.log("events: ", events, title, date);
+    setEvents([
+      ...events,
+      {
+        date: date,
+        title: title,
+      }
+    ]);
+    console.log("events: ", events);
+  }
+
+  function addRandomEvent(title) {
+    console.log("Adding a random event");
+    console.log("events: ", events);
 
     setEvents([
       ...events,
       {
-        date: getRandomJuneDate(),
-        title: "Random event",
+        date: formatDateForCalendar(new Date()),
+        title: title ,
       }
     ])
   }
-
-  const handleEventClick = (info) => {
-    console.log("Handling event click");
-    console.log(info);
-    // TODO: Display modal with event details
-  };
 
   const EventItem = ({ info }) => {
     // TODO: Customize how the event is displayed on the calendar
@@ -57,18 +56,72 @@ export function CalendarPage() {
     );
   };
 
+  const formatDate = (date) => {
+    if (!date) return '';
+    let d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  };
+
+  function onDialogClose(localStartDate, localEndDate) {
+    console.log("onDialogClose");
+    setIsOpen(false);
+    // TODO: Update the event if the localStartDate changed
+    
+    // TODO: Add events between localStartDate and localEndDate
+    addEvent("end", localEndDate);
+  }
+
+  const startPeriod = () => {
+    const now = new Date();
+    setPeriodStartDate(now);
+    addRandomEvent(!periodStartDate ? "Period started" : "Period ended");
+  }
+
+  // const openModal = () => {document.getElementById('my_modal_1').showModal()}
+  console.log("rendering calendar page")
+
+  const updateModal = (newContent) => {
+    const event = newContent.event
+    const title = event.title
+    setDialogEvent(event);
+    setDialogTitle(title);
+    setIsOpen(true);
+  }
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
+      <Period startDate={periodStartDate} setStartDate={startPeriod} />
       <FullCalendar
         selectable={true}
         plugins={[dayGridPlugin]}
-        eventClick={handleEventClick}
+        eventClick={updateModal}
         eventContent={(info) => <EventItem info={info} />}
         initialView="dayGridMonth"
         events={events}
       />
+      {/* <button className="btn" onClick={openModal}>open modal</button> */}
+      {/* <Modal> */}
 
-      <button onClick={addEvent}>Add random event</button>
+        {/* <div className="modal-box">
+        <h3 className="font-bold text-lg">Hello Tal!</h3>
+        <p className="py-4">Press ESC key or click the button below to close</p>
+        <div className="modal-action">
+          <form method="dialog">
+            <button className="btn">Close</button>
+          </form>
+        </div>
+      </div> */}
+      {/* </Modal> */}
+      {isOpen && <PeriodDialog title={dialogTitle} event={dialogEvent} onClose={onDialogClose} />}
     </div>
   )
 };
