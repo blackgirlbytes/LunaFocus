@@ -16,9 +16,9 @@ const formatDate = (date) => {
   return [year, month, day].join('-');
 };
 
-export const PeriodDialog = ({ dialogTitle, event, onClose }) => {
-  const [localStartDate, setLocalStartDate] = useState(formatDate(event.start));
-  const [localEndDate, setLocalEndDate] = useState(formatDate(event.end));
+export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
+  const [localStartDate, setLocalStartDate] = useState(formatDate(period.startDate));
+  const [localEndDate, setLocalEndDate] = useState(formatDate(period.endDate));
 
   const handleStartDateChange = (e) => {
     setLocalStartDate(e.target.value);
