@@ -38,10 +38,10 @@ export function LandingPage() {
                 <div className="space-y-2">
                   <h1
                     className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-[#000080]">
-                    Empower Your Path to Parenthood
+                    Your Health, Your Choices, Your Data
                   </h1>
                   <p className="max-w-[600px] text-[#333333] md:text-xl">
-                   LunaFocus prioritizes your data privacy and personal ownership, providing customizable tools to support you every step of the way.
+                    LunaFocus prioritizes your data privacy and personal ownership, providing customizable tools to support you every step of the way.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -55,19 +55,19 @@ export function LandingPage() {
                     href="#"
                     className="inline-flex h-10 items-center justify-center rounded-md border border-[#ADD8E6] bg-[#FFFFFF] px-8 text-sm font-medium shadow-md transition-colors hover:bg-[#E6E6FA] hover:text-[#333333] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ADD8E6] disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}>
-                    Learn More
+                    Login
                   </Link>
                 </div>
               </div>
               <img
                 src="/images/infantwfam.jpg"
                 alt="Hero"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square" 
-                />
+                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
+              />
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-[#E6E6FA]">
+        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-[#E6E6FA]">
           <div className="container px-4 md:px-6">
             <div
               className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -82,7 +82,7 @@ export function LandingPage() {
                 </h2>
                 <p
                   className="max-w-[900px] text-[#333333] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  We believe in empowering you with complete control over your personal information. 
+                  We believe in empowering you with complete control over your personal information.
                   LunaFocus is designed to keep your data secure and private, allowing you to manage and own your family planning journey.
                 </p>
               </div>
@@ -101,7 +101,7 @@ export function LandingPage() {
                       <p className="text-[#333333]">
                         Customize your pregnancy tracking to suit your unique needs and preferences.
                       </p>
-                    </div> 
+                    </div>
                   </li>
                   <li>
                     <div className="grid gap-1">
@@ -123,7 +123,7 @@ export function LandingPage() {
                   </li>
                   <li>
                     <div className="grid gap-1">
-                      <h3 className="text-xl font-bold text-[#000080]">Encrypted Data Storage (Coming Soon)</h3>
+                      <h3 className="text-xl font-bold text-[#000080]">Encrypted Data Storage</h3>
                       <p className="text-[#333333]">
                         Your sensitive information will be securely encrypted and stored, ensuring your privacy is
                         protected.
@@ -135,14 +135,14 @@ export function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-[#FFFFFF] flex flex-col items-center justify-center">
+        <section id="mission" className="w-full py-12 md:py-24 lg:py-32 bg-[#FFFFFF] flex flex-col items-center justify-center">
           <div className="container grid items-center gap-6 px-4 md:px-6 lg:grid-cols-2 lg:gap-10 mx-auto max-w-[1200px]">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-[#000080]">
                 Support for all outcomes
               </h2>
               <p className="max-w-[600px] text-[#333333] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Life's journey to parenthood takes many paths. From IVF to adoption, loss to postpartum - LunaFocus ensures your story remains yours to share.
+                Life's journey to parenthood takes many paths. From IVF to adoption, loss to postpartum - LunaFocus ensures your story remains yours to share.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
@@ -151,24 +151,24 @@ export function LandingPage() {
                 className="inline-flex h-10 items-center justify-center rounded-md bg-[#000080] px-8 text-sm font-medium text-[#FFFFFF] shadow-md transition-colors hover:bg-[#000080] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#000080] disabled:pointer-events-none disabled:opacity-50"
                 prefetch={false}
               >
-                Explore Features
+                Learn More
               </Link>
               <Link
                 href="#"
                 className="inline-flex h-10 items-center justify-center rounded-md border border-[#ADD8E6] bg-[#FFFFFF] px-8 text-sm font-medium shadow-md transition-colors hover:bg-[#E6E6FA] hover:text-[#333333] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ADD8E6] disabled:pointer-events-none disabled:opacity-50"
                 prefetch={false}
               >
-                Contact Us
+                Join Now
               </Link>
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-[#E6E6FA]">
+        <section id="in-the-media" className="w-full py-12 md:py-24 lg:py-32 bg-[#E6E6FA]">
           <div className="container px-4 md:px-6 mx-auto max-w-[1200px]">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="space-y-4">
                 <div
-                  className="inline-block rounded-lg bg-[#FFFFFF] px-3 py-1 text-sm text-[#000080]">Testimonial</div>
+                  className="inline-block rounded-lg bg-[#FFFFFF] px-3 py-1 text-sm text-[#000080]">News</div>
                 <blockquote
                   className="text-lg font-semibold leading-snug lg:text-xl lg:leading-normal xl:text-2xl text-[#333333]">
                   &ldquo;Dear tech companies, I don’t want to see pregnancy ads after my child was stillborn.&ldquo;
@@ -181,7 +181,7 @@ export function LandingPage() {
                   <div>
                     <div className="font-semibold text-[#000080]">Gillian Brockell, Staff Writer</div>
                     <div className="text-sm text-[#333333]">
-                      <Link                
+                      <Link
                         href="https://www.washingtonpost.com/lifestyle/2018/12/12/dear-tech-companies-i-dont-want-see-pregnancy-ads-after-my-child-was-stillborn/?noredirect=on"
                         prefetch={false}>
                         Washington Post
@@ -191,7 +191,7 @@ export function LandingPage() {
               </div>
               <div className="space-y-4">
                 <div
-                  className="inline-block rounded-lg bg-[#FFFFFF] px-3 py-1 text-sm text-[#000080]">Twitter</div>
+                  className="inline-block rounded-lg bg-[#FFFFFF] px-3 py-1 text-sm text-[#000080]">Twitter / X</div>
                 <div className="bg-[#FFFFFF] rounded-lg shadow-md p-4">
                   <div className="flex items-center gap-4">
                     <Avatar>

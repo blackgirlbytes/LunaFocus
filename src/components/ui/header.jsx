@@ -11,28 +11,22 @@ const Header = () => {
       </Link>
       <nav className="ml-auto flex gap-4 sm:gap-6">
         <Link
-          href="/Statistics"
+          href="/#features"
           className="text-sm font-medium hover:text-[#000080] text-[#333333]"
           prefetch={false}>
-          Statistics
+          Features
         </Link>
         <Link
-          href="#"
+          href="/#mission"
           className="text-sm font-medium hover:text-[#000080] text-[#333333]"
           prefetch={false}>
-          Privacy
+          Mission
         </Link>
         <Link
-          href="/About"
+          href="/#in-the-media"
           className="text-sm font-medium hover:text-[#000080] text-[#333333]"
           prefetch={false}>
-          About
-        </Link>
-        <Link
-          href="/Contact"
-          className="text-sm font-medium hover:text-[#000080] text-[#333333]"
-          prefetch={false}>
-          Contact
+          In the Media
         </Link>
       </nav>
     </header>
