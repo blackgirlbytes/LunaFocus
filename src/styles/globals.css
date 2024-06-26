@@ -39,3 +39,38 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-cormorant_garamond), serif;
 }
+
+/* Calendar */
+.fc .fc-daygrid-day-events {
+  /* horizontally center the group of dots */
+  display: flex;
+  justify-content: center;
+}
+
+.fc-daygrid-event-harness {
+  display: flex;
+  /* horizontally center each dot */
+  justify-content: center;
+}
+
+.fc-h-event {
+  background-color: transparent;
+  border: none;
+  display: block; /* ?? */
+
+  .dot {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: red;
+  }
+
+  p {
+    color: black;
+  }
+}
+
+.fc .fc-daygrid-day-bottom {
+  margin: 0;
+}

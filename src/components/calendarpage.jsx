@@ -52,7 +52,8 @@ export function CalendarPage() {
     const { event } = info;
     return (
       <div>
-        <p>{event.title}</p>
+        <span className="dot"></span>
+        {/* <p>{event.title}</p> */}
       </div>
     );
   };
