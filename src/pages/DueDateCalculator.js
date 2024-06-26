@@ -1,24 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import moment from 'moment';
-import { Web5 } from '@web5/api';
+import { useWeb5 } from '@/context/Web5Context';
 
 const DueDateCalculator = () => {
+  const { web5, userDid } = useWeb5();
   const [method, setMethod] = useState('lastPeriod');
   const [date, setDate] = useState('');
   const [cycleLength, setCycleLength] = useState(28);
   const [result, setResult] = useState(null);
-  const [web5, setWeb5] = useState(null);
-  const [userDid, setUserDid] = useState(null);
-
-  useEffect(() => {
-    const connectWeb5 = async () => {
-      const { web5, did: userDid } = await Web5.connect({});
-      setWeb5(web5);
-      setUserDid(userDid);
-    };
-
-    connectWeb5();
-  }, []);
 
   const storePregnancyDataInDWN = async (dueDate, weeks, trimester) => {
     if (!web5 || !userDid) return;
@@ -29,7 +18,7 @@ const DueDateCalculator = () => {
       trimester,
     };
 
-   const {record} =  await web5.dwn.records.create({
+    const { record } = await web5.dwn.records.create({
       did: userDid,
       data: {
         content: JSON.stringify(pregnancyData),
@@ -39,9 +28,8 @@ const DueDateCalculator = () => {
         dataFormat: 'application/json',
       },
     });
-    console.log('Pregnancy data stored in DWN', await record.data.text(), record)
+    console.log('Pregnancy data stored in DWN', await record.data.text(), record);
   };
-
 
   const calculateDueDate = () => {
     let dueDate;

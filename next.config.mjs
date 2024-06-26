@@ -2,7 +2,7 @@ import webpack from 'webpack';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
 
   webpack: (config, { isServer }) => {
     if (!isServer) {
