@@ -53,7 +53,6 @@ export function CalendarPage() {
     return (
       <div>
         <span className="dot"></span>
-        {/* <p>{event.title}</p> */}
       </div>
     );
   };
