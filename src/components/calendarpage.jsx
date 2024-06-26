@@ -4,6 +4,7 @@ import { useState } from "react";
 import Period from "@/components/period"
 import { PeriodDialog } from "@/components/period-dialog"
 import {v4 as uuidv4} from 'uuid';
+import { formatDate } from "@/lib/utils";
 
 // TODO: Read events from DWN
 const dummyPeriodStart = '2024-06-11';
@@ -28,18 +29,22 @@ export function CalendarPage() {
       endDate: dummyPeriodEnd,
     }
   });
+  const dummyPeriodDates = calculatePeriodDays(dummyPeriodStart, dummyPeriodEnd);
+  const dummyPeriodEvents = dummyPeriodDates.map((dummyPeriodDate) => {
+    return {
+      date: dummyPeriodDate,
+      title: `day-${uuidv4()}`,
+      periodId: dummyPeriodId,
+    }
+  });
   const [events, setEvents] = useState([
     {
       date: dummyPeriodStart,
       title: "start",
       periodId: dummyPeriodId,
     },
-    {
-      date: dummyPeriodEnd,
-      title: "end",
-      periodId: dummyPeriodId,
-    }
-  ]);
+  ].concat(dummyPeriodEvents));
+  /**** END INITIALIZATION ****/
 
   /**
    * Returns the periodId of the new period.
@@ -62,13 +67,30 @@ export function CalendarPage() {
   }
 
   /**
+   * Return the dates (as strings) between the start and end dates.
+   * @param {String} startDate excluded from the response
+   * @param {String} endDate included in the response
+   */
+  function calculatePeriodDays(startDate, endDate) {
+    const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+    const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
+    let start = new Date(startYear, startMonth - 1, startDay);
+    const end = new Date(endYear, endMonth - 1, endDay);
+    const days = [];
+    start.setDate(start.getDate() + 1);
+    for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+      days.push(formatDate(d));
+    }
+    return days;
+  }
+
+  /**
    * Adds new events to the calendar for each day between the start and end dates.
    * @param {String} periodId UUID identifying the period
    * @param {String} endDate String formatted as 'YYYY-MM-DD'
    */
   function endExistingPeriod(periodId, endDate) {
     console.log("Ending a period");
-    console.log("periods: ", periods, periodId, endDate);
     setPeriods({
       ...periods,
       [periodId]: {
@@ -77,7 +99,10 @@ export function CalendarPage() {
       }
     });
     console.log("periods: ", periods);
-    addEvent("end", endDate, periodId);
+    // Calculate the days in the period in between
+    const days = calculatePeriodDays(periods[periodId].startDate, endDate);
+    console.log("Period days: ", days);
+    addEvents(days, periodId);
   }
 
   /**
@@ -110,6 +135,23 @@ export function CalendarPage() {
     console.log("events: ", events);
   }
 
+  function addEvents(dates, periodId) {
+    console.log("Adding events");
+    console.log("events: ", events, dates);
+    const newEvents = dates.map((date) => {
+      return {
+        date: date,
+        title: `day-${uuidv4()}`,
+        periodId: periodId,
+      }
+    });
+    setEvents([
+      ...events,
+      ...newEvents,
+    ]);
+    console.log("events: ", events);
+  }
+
   const EventItem = ({ info }) => {
     // TODO: Customize how the event is displayed on the calendar
     const { event } = info;
@@ -118,21 +160,6 @@ export function CalendarPage() {
         <span className="dot"></span>
       </div>
     );
-  };
-
-  const formatDate = (date) => {
-    if (!date) return '';
-    let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-
-    return [year, month, day].join('-');
   };
 
   function onDialogClose(localStartDate, localEndDate) {
