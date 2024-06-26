@@ -24,7 +24,7 @@ export const DynamicDialog = ({title, dialogContent, onClose}) => {
                 className="btn"
                 onClick={onClose}
               >
-                Close
+                Submit
               </button>
             </div>
           </div>

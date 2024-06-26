@@ -33,6 +33,7 @@ export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
 
   const dialogContent = (
       <div>
+        <h2 className="text-lg">When did your period start and end?</h2>
         <label htmlFor="start">Started: </label>
         <input type="date" id="start" name="start" value={localStartDate} onChange={handleStartDateChange} />
         <br/>
