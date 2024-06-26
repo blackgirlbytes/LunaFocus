@@ -30,7 +30,7 @@ export function CalendarPage() {
       endDate: dummyPeriodEnd,
     }
   });
-  const dummyPeriodDates = calculatePeriodDays(dummyPeriodStart, dummyPeriodEnd);
+  const dummyPeriodDates = calculatePeriodDays(dummyPeriodStart, dummyPeriodEnd || formatDate(new Date()));
   const dummyPeriodEvents = dummyPeriodDates.map((dummyPeriodDate) => {
     return {
       date: dummyPeriodDate,
@@ -47,7 +47,9 @@ export function CalendarPage() {
   ].concat(dummyPeriodEvents));
 
   useEffect(() => {
+    const newCurrentPeriod = findCurrentPeriod();
     setCurrentPeriod(findCurrentPeriod());
+    setPeriodStartDate(newCurrentPeriod?.startDate);
   }, [periods]);
   /**** END INITIALIZATION ****/
 
@@ -186,7 +188,6 @@ export function CalendarPage() {
   }
 
   const onPeriodControlChange = (date) => {
-    setPeriodStartDate(date);
     if (date) {
       startNewPeriod(formatDate(date));
     } else {
