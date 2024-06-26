@@ -1,6 +1,7 @@
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useState } from "react";
+import Drawer from '@/components/ui/calendar/drawer';
 
 // TODO: Read events from DWN
 const startingEvents = [
@@ -10,6 +11,7 @@ const startingEvents = [
 
 export function CalendarPage() {
   const [events, setEvents] = useState(startingEvents);
+  const [showDrawer, setShowDrawer] = useState(false);
 
   // TODO: Delete me later. For demo purposes
   function getRandomJuneDate() {
@@ -45,6 +47,7 @@ export function CalendarPage() {
     console.log("Handling event click");
     console.log(info);
     // TODO: Display modal with event details
+    setShowDrawer(true);
   };
 
   const EventItem = ({ info }) => {
@@ -70,6 +73,7 @@ export function CalendarPage() {
       />
 
       <button onClick={addEvent}>Add random event</button>
+      <Drawer showDrawer={showDrawer} updateShowDrawer={setShowDrawer} />
     </div>
   )
 };
