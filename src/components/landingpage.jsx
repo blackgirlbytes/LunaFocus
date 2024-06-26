@@ -26,7 +26,7 @@ To read more about using these font, please visit the Next.js documentation:
 import Link from "next/link"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
-export function Homepage() {
+export function LandingPage() {
   return (
     (<div className="flex flex-col min-h-[100dvh]">
       <main className="flex-1">
