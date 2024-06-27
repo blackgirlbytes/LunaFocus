@@ -8,10 +8,8 @@ export default function Calendar() {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <UsernameDisplay />
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <StatsPage />
-      </div>
       <CalendarPage />
+      <StatsPage />
     </main>
   );
 }
