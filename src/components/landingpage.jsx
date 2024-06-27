@@ -38,21 +38,21 @@ export function LandingPage() {
                 <div className="space-y-2">
                   <h1
                     className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-[#000080]">
-                    Empower Your Path to Parenthood
+                    Your Health, Your Choices, Your Data.
                   </h1>
                   <p className="max-w-[600px] text-[#333333] md:text-xl">
-                   LunaFocus prioritizes your data privacy and personal ownership, providing customizable tools to support you every step of the way.
+                   LunaLock prioritizes your data privacy and personal ownership, providing customizable tools to support you every step of the way.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Link
-                    href="#"
+                    href="/Login"
                     className="inline-flex h-10 items-center justify-center rounded-md bg-[#000080] px-8 text-sm font-medium text-[#FFFFFF] shadow-md transition-colors hover:bg-[#000080] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#000080] disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}>
                     Get Started
                   </Link>
                   <Link
-                    href="#"
+                    href="/Login"
                     className="inline-flex h-10 items-center justify-center rounded-md border border-[#ADD8E6] bg-[#FFFFFF] px-8 text-sm font-medium shadow-md transition-colors hover:bg-[#E6E6FA] hover:text-[#333333] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ADD8E6] disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}>
                     Learn More
@@ -82,8 +82,8 @@ export function LandingPage() {
                 </h2>
                 <p
                   className="max-w-[900px] text-[#333333] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  We believe in empowering you with complete control over your personal information. 
-                  LunaFocus is designed to keep your data secure and private, allowing you to manage and own your family planning journey.
+                  We believe in empowering you with complete control of your personal information. 
+                  LunaLock is designed to keep your data secure and private, allowing you to manage and own your health journey.
                 </p>
               </div>
             </div>
@@ -107,7 +107,7 @@ export function LandingPage() {
                     <div className="grid gap-1">
                       <h3 className="text-xl font-bold text-[#000080]">Own Your Data</h3>
                       <p className="text-[#333333]">
-                        Maintain full control and ownership over your personal pregnancy data, with the ability to
+                        Maintain full control and ownership over your personal health data, with the ability to
                         export or delete it at any time.
                       </p>
                     </div>
@@ -116,7 +116,7 @@ export function LandingPage() {
                     <div className="grid gap-1">
                       <h3 className="text-xl font-bold text-[#000080]">Seamless Sharing</h3>
                       <p className="text-[#333333]">
-                        Easily share your pregnancy progress with your loved ones, while maintaining control over your
+                        Easily share your health information, while maintaining control over your
                         data.
                       </p>
                     </div>
@@ -142,7 +142,7 @@ export function LandingPage() {
                 Support for all outcomes
               </h2>
               <p className="max-w-[600px] text-[#333333] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Life's journey to parenthood takes many paths. From IVF to adoption, loss to postpartum - LunaFocus ensures your story remains yours to share.
+              Life's journey takes many paths. From IVF to adoption, loss to postpartum - LunaLock ensures your story remains yours to share.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
@@ -228,7 +228,7 @@ export function LandingPage() {
       </main>
       <footer
         className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-[#E6E6FA] shadow-md">
-        <p className="text-xs text-[#333333]">&copy; 2024 LunaFocus. All rights reserved.</p>
+        <p className="text-xs text-[#333333]">&copy; 2024 LunaLock. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link
             href="#"
