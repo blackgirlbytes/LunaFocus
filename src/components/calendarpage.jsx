@@ -223,7 +223,7 @@ export function CalendarPage() {
         selectable={true}
         plugins={[dayGridPlugin, interactionPlugin]}
         dateClick={handleDateClick}
-        eventClick={openModalFromCalendar} // TODO: Display a different modal
+        eventClick={openModalFromCalendar} // TODO: Fix existing modal to support editing period data or display a different modal
         eventContent={(info) => <EventItem info={info} />}
         initialView="dayGridMonth"
         dayCellContent={(info) => <DayCell info={info} />}
