@@ -35,6 +35,25 @@ const PeriodTracker = async function(web5, userDid) {
     }
   }
 
+  async function tryLookupEntry({id}) {
+    console.log('trying to lookup entry for id: ', id);
+    try {
+      const { record } = await web5.dwn.records.read({
+        message: {
+            filter: {
+                recordId: id,
+            }
+        }
+      });
+      console.log(`[${id}] record: `, record);
+      const data = await record.data.json();
+      console.log(`[${id}] data: `, data);
+    } catch (e) {
+      console.error(`caught error for ${id}: `, e)
+    }
+
+  }
+
   async function fetchAllPeriodEntries() {
     const { records, status } = await web5.dwn.records.query({
         message: {
@@ -50,7 +69,10 @@ const PeriodTracker = async function(web5, userDid) {
     }
   
     const entries = await Promise.all(records.map(async record => await record.data.json()));
-    console.log(entries)
+    console.log("entries: ", entries)
+    console.log("record ids: ", records.map(record => record.id))
+    await entries.forEach(tryLookupEntry)
+    await records.forEach(tryLookupEntry)
     return entries;
   }
 
