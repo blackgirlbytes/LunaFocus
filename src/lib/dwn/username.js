@@ -46,13 +46,18 @@ const Username = async function (web5, userDid) {
         });
 
         if (status.code !== 200) {
-            console.error('Failed to fetch period entries:', status);
+            console.error('Failed to fetch user entries:', status);
             return [];
         }
 
-        const entries = await Promise.all(records.map(async record => await record.data.json()));
-        console.log('fetching username', username)
-        return entries;
+        if (records.length > 0) {
+            const entry = await records[0].data.json();
+            console.log(entry)
+            console.log('fetching username', entry);
+            return entry.username;
+        } else {
+            return "User";
+        }
     }
 
     return {
