@@ -6,7 +6,7 @@ import CurrentPeriodControl from "@/components/current-period-control";
 import { PeriodDialog } from "@/components/period-dialog";
 import { v4 as uuidv4 } from 'uuid';
 import PeriodTracker from '@/lib/dwn/period-tracker';
-import { formatDate, stringToDate, toUTCDate } from "@/lib/utils";
+import { formatDate, stringToDate, toUTCDate, calculatePeriodDays } from "@/lib/utils";
 import { useWeb5 } from '@/context/Web5Context';
 
 const formatDateForCalendar = (date) => date.toISOString().split('T')[0];
@@ -87,17 +87,6 @@ export function CalendarPage() {
     setDialogPeriod(newPeriod);
     setDialogTitle('Set Period Dates');
     setIsOpen(true);
-  }
-
-  function calculatePeriodDays(startDate, endDate) {
-    // stringToDate ensures these match the day cell date in the UI
-    const start = stringToDate(startDate);
-    const end = stringToDate(endDate);
-    const days = [];
-    for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
-      days.push(formatDate(d));
-    }
-    return days;
   }
 
   function findCurrentPeriod() {
