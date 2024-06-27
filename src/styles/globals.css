@@ -57,6 +57,21 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
 }
 
+.day-with-event {
+  /* Do not display the day cell date*/
+  .fc-daygrid-day-top {
+    display: none;
+  }
+
+  .fc-daygrid-day-frame {
+    display: flex;
+    /* horizontally center the dot */
+    justify-content: center;
+    /* vertically center the dot */
+    align-items: center;
+  }
+}
+
 .fc-h-event {
   background-color: transparent;
   border: none;
