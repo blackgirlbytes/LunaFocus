@@ -1,7 +1,7 @@
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid'
-import { useState } from "react";
-import Period from "@/components/period"
+import { useEffect, useState } from "react";
+import CurrentPeriodControl from "@/components/current-period-control"
 import { PeriodDialog } from "@/components/period-dialog"
 import {v4 as uuidv4} from 'uuid';
 import { formatDate } from "@/lib/utils";
@@ -17,6 +17,7 @@ export function CalendarPage() {
   const [dialogTitle, setDialogTitle] = useState('Dialog');
   const [isOpen, setIsOpen] = useState(false);
   const [dialogPeriod, setDialogPeriod] = useState(null);
+  const [currentPeriod, setCurrentPeriod] = useState(null);
 
   /**
    * Initialize the period and event data.
@@ -29,7 +30,7 @@ export function CalendarPage() {
       endDate: dummyPeriodEnd,
     }
   });
-  const dummyPeriodDates = calculatePeriodDays(dummyPeriodStart, dummyPeriodEnd);
+  const dummyPeriodDates = calculatePeriodDays(dummyPeriodStart, dummyPeriodEnd || formatDate(new Date()));
   const dummyPeriodEvents = dummyPeriodDates.map((dummyPeriodDate) => {
     return {
       date: dummyPeriodDate,
@@ -44,6 +45,12 @@ export function CalendarPage() {
       periodId: dummyPeriodId,
     },
   ].concat(dummyPeriodEvents));
+
+  useEffect(() => {
+    const newCurrentPeriod = findCurrentPeriod();
+    setCurrentPeriod(findCurrentPeriod());
+    setPeriodStartDate(newCurrentPeriod?.startDate);
+  }, [periods]);
   /**** END INITIALIZATION ****/
 
   /**
@@ -103,6 +110,15 @@ export function CalendarPage() {
     const days = calculatePeriodDays(periods[periodId].startDate, endDate);
     console.log("Period days: ", days);
     addEvents(days, periodId);
+  }
+
+  function findCurrentPeriod() {
+    for (const periodId in periods) {
+      const period = periods[periodId];
+      if (!period.endDate) {
+        return period;
+      }
+    }
   }
 
   /**
@@ -171,39 +187,45 @@ export function CalendarPage() {
     endExistingPeriod(dialogPeriod.id, localEndDate);
   }
 
-  const startPeriod = () => {
-    const now = new Date();
-    setPeriodStartDate(now);
-    if (!periodStartDate) {
-      startNewPeriod(formatDate(now));
+  const onPeriodControlChange = (date) => {
+    if (date) {
+      startNewPeriod(formatDate(date));
+    } else {
+      openModalFromButton(currentPeriod.id);
     }
   }
 
   // const openModal = () => {document.getElementById('my_modal_1').showModal()}
   console.log("rendering calendar page")
 
-  const updateModal = (newContent) => {
-    const event = newContent.event;
-    const periodId = event.extendedProps.periodId;
-    console.log("updateModal", event, event.extendedProps.periodId);
-
-    const title = event.title;
+  const openModal = (eventTitle, periodId) => {
     const period = findPeriodById(periodId);
     setDialogPeriod(period);
-    setDialogTitle(title);
+    setDialogTitle(eventTitle);
     setIsOpen(true);
   }
 
+  const openModalFromCalendar = (newContent) => {
+    const event = newContent.event;
+    const periodId = event.extendedProps?.periodId;
+
+    openModal(event.title, periodId);
+  }
+
+  const openModalFromButton = (periodId) => {
+    openModal("end period", periodId);
+  }
+
   return (
-    <div className="flex flex-col min-h-[100dvh]">
-      <Period startDate={periodStartDate} setStartDate={startPeriod} />
+    <div className="flex flex-col calendar-page">
       <FullCalendar
         selectable={true}
         plugins={[dayGridPlugin]}
-        eventClick={updateModal}
+        eventClick={openModalFromCalendar}
         eventContent={(info) => <EventItem info={info} />}
         initialView="dayGridMonth"
         events={events}
+        aspectRatio={1}
       />
       {/* <button className="btn" onClick={openModal}>open modal</button> */}
       {/* <Modal> */}
@@ -218,6 +240,7 @@ export function CalendarPage() {
         </div>
       </div> */}
       {/* </Modal> */}
+      <CurrentPeriodControl startDate={periodStartDate} onPeriodControlChange={onPeriodControlChange} />
       {isOpen && <PeriodDialog title={dialogTitle} period={dialogPeriod} onClose={onDialogClose} />}
     </div>
   )
