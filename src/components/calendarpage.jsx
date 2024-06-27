@@ -129,29 +129,17 @@ export function CalendarPage() {
     periodTracker.createPeriodEntry(periodEntryData);
   }
 
-  const DayCell = ({ info }) => {
-    // Check if date overlaps with a period
-    for (let i = 0; i < periods.length; i++) {
-      const period = periods[i];
-      const dayCellDate = info.date;
-      const startDate = stringToDate(period.startDate);
-      const endDate = stringToDate(period.endDate);
-      if (dayCellDate >= startDate && dayCellDate <= endDate) {
-        return (<div></div>);
-      }
-    }
-    return (
-      <div>
-        {info.dayNumberText}
-      </div>
-    );
-  }
-
   const EventItem = ({ info }) => {
     const { event } = info;
     const flowType = event.extendedProps.flowType;
     const date = toUTCDate(event.start);
     const day = date.getDate();
+
+    // Update the daycell
+    const dateString  = formatDate(date);
+    const tdElement = document.querySelector(`td[data-date="${dateString}"]`);
+    tdElement.classList.add('day-with-event');
+
     // The timestamp on the event is 00:00 GMT but in PST, so it's the previous day. 
     // Convert it to the GMT date.
     return (
@@ -216,7 +204,6 @@ export function CalendarPage() {
         eventClick={openModalFromCalendar} // TODO: Fix existing modal to support editing period data or display a different modal
         eventContent={(info) => <EventItem info={info} />}
         initialView="dayGridMonth"
-        dayCellContent={(info) => <DayCell info={info} />}
         events={events}
         aspectRatio={1}
       />
