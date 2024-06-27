@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DynamicDialog } from "@/components/modal";
-import { formatDate } from "@/lib/utils";
+import { stringToDate, formatDate } from "@/lib/utils";
 
 export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
   const [localStartDate, setLocalStartDate] = useState(period?.startDate || "");
@@ -37,8 +37,9 @@ export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
   };
 
   const calculatePeriodDays = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    // stringToDate ensures these match the day cell date in the UI
+    const start = stringToDate(startDate);
+    const end = stringToDate(endDate);
     const days = [];
     for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
       days.push(formatDate(d));

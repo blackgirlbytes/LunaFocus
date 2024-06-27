@@ -90,8 +90,9 @@ export function CalendarPage() {
   }
 
   function calculatePeriodDays(startDate, endDate) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    // stringToDate ensures these match the day cell date in the UI
+    const start = stringToDate(startDate);
+    const end = stringToDate(endDate);
     const days = [];
     for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
       days.push(formatDate(d));
