@@ -51,9 +51,10 @@ export async function fetchAllPeriodEntries(web5) {
         return [];
     }
 
-    return records.map(record => record.data);
+    const entries = await Promise.all(records.map(async record => await record.data.json()));
+    console.log(entries)
+    return entries;
 }
-
 async function queryLocalProtocol(web5, protocolUrl) {
     return await web5.dwn.protocols.query({
         message: {
