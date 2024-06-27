@@ -1,20 +1,52 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DynamicDialog } from "@/components/modal";
+import { formatDate } from "@/lib/utils";
 
 export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
-  const [localStartDate, setLocalStartDate] = useState((period?.startDate));
-  const [localEndDate, setLocalEndDate] = useState(period?.endDate);
+  const [localStartDate, setLocalStartDate] = useState(period?.startDate || "");
+  const [localEndDate, setLocalEndDate] = useState(period?.endDate || "");
+  const [flowTypes, setFlowTypes] = useState({});
+
+  useEffect(() => {
+    if (period && period.dailyEntries) {
+      const initialFlowTypes = {};
+      period.dailyEntries.forEach(entry => {
+        initialFlowTypes[entry.date] = entry.flowType;
+      });
+      setFlowTypes(initialFlowTypes);
+    }
+  }, [period]);
 
   const handleStartDateChange = (e) => {
     setLocalStartDate(e.target.value);
   };
+
   const handleEndDateChange = (e) => {
     setLocalEndDate(e.target.value);
   };
 
-  const handleClose = () => {
-    onClose(localStartDate, localEndDate);
+  const handleFlowTypeChange = (date, flowType) => {
+    setFlowTypes(prevFlowTypes => ({
+      ...prevFlowTypes,
+      [date]: flowType,
+    }));
   };
+
+  const handleClose = () => {
+    onClose(localStartDate, localEndDate, flowTypes);
+  };
+
+  const calculatePeriodDays = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const days = [];
+    for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+      days.push(formatDate(d));
+    }
+    return days;
+  };
+
+  const periodDays = localStartDate && localEndDate ? calculatePeriodDays(localStartDate, localEndDate) : [];
 
   const dialogContent = (
     <div>
@@ -24,6 +56,18 @@ export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
       <br />
       <label htmlFor="end">Ended: </label>
       <input type="date" id="end" name="end" value={localEndDate} onChange={handleEndDateChange} />
+      <br />
+      {periodDays.map(day => (
+        <div key={day}>
+          <label>{day} Flow Type: </label>
+          <select value={flowTypes[day] || ""} onChange={(e) => handleFlowTypeChange(day, e.target.value)}>
+            <option value="">Select</option>
+            <option value="light">Light</option>
+            <option value="medium">Medium</option>
+            <option value="heavy">Heavy</option>
+          </select>
+        </div>
+      ))}
     </div>
   );
 
