@@ -113,7 +113,7 @@ export function CalendarPage() {
   }
 
   function addEvents(dates, periodId, flowTypes) {
-    const newEvents = dates.map((date) => ({
+    const newOrUpdatedEvents = dates.map((date) => ({
       date: date,
       title: `day-${uuidv4()}`,
       periodId: periodId,
@@ -121,8 +121,8 @@ export function CalendarPage() {
     }));
 
     setEvents((prevEvents) => [
-      ...prevEvents,
-      ...newEvents,
+      ...prevEvents.filter(event => event.periodId !== periodId), // events from other periods
+      ...newOrUpdatedEvents,
     ]);
 
     const periodEntryData = {
