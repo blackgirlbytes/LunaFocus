@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment"
+import moment from "moment";
 
 export default function CurrentPeriodControl({ startDate, onPeriodControlChange }) {
   const calculatePeriodDayNumber = (startDate) => {
@@ -11,15 +11,17 @@ export default function CurrentPeriodControl({ startDate, onPeriodControlChange 
   };
 
   if (startDate) {
-    return <div className="flex justify-center period-control ongoing-period-control">
-      <div className="flex flex-col justify-center current-period-info">
-        <p className="text-xl">Period: </p>
-        <p className="text-2xl">Day {calculatePeriodDayNumber(startDate)}</p><br/>
-        <div className="flex justify-center">
-          <button className="btn btn-primary" onClick={() => onPeriodControlChange(null)}>My period ended</button>
+    return (
+      <div className="flex justify-center period-control ongoing-period-control">
+        <div className="flex flex-col justify-center current-period-info">
+          <p className="text-xl">Period: </p>
+          <p className="text-2xl">Day {calculatePeriodDayNumber(startDate)}</p><br />
+          <div className="flex justify-center">
+            <button className="btn btn-primary" onClick={() => onPeriodControlChange(null)}>My period ended</button>
+          </div>
         </div>
       </div>
-    </div>
+    );
   }
 
   return (
