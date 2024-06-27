@@ -7,6 +7,7 @@ import { PeriodDialog } from "@/components/period-dialog";
 import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from "@/lib/utils";
 import PeriodTracker from '@/lib/dwn/period-tracker';
+import { formatDate, stringToDate, toUTCDate } from "@/lib/utils";
 import { useWeb5 } from '@/context/Web5Context';
 
 const formatDateForCalendar = (date) => date.toISOString().split('T')[0];
@@ -46,8 +47,16 @@ export function CalendarPage() {
           flowType: day.flowType,
         }));
       });
-
       setEvents(newEvents);
+
+      const newPeriods = entries.flatMap(entry => {
+        return {
+          id: entry.id,
+          startDate: entry.startDate,
+          endDate: entry.endDate,
+        }
+      });
+      setPeriods(newPeriods);
     };
 
     if (periodTracker) {      
@@ -131,13 +140,34 @@ export function CalendarPage() {
     periodTracker.createPeriodEntry(periodEntryData);
   }
 
+  const DayCell = ({ info }) => {
+    // Check if date overlaps with a period
+    for (let i = 0; i < periods.length; i++) {
+      const period = periods[i];
+      const dayCellDate = info.date;
+      const startDate = stringToDate(period.startDate);
+      const endDate = stringToDate(period.endDate);
+      if (dayCellDate >= startDate && dayCellDate <= endDate) {
+        return (<div></div>);
+      }
+    }
+    return (
+      <div>
+        {info.dayNumberText}
+      </div>
+    );
+  }
+
   const EventItem = ({ info }) => {
     const { event } = info;
     const flowType = event.extendedProps.flowType;
+    const date = toUTCDate(event._instance.range.start);
+    const day = date.getDate();
+    // The timestamp on the event is 00:00 GMT but in PST, so it's the previous day. 
+    // Convert it to the GMT date.
     return (
       <div>
-        <span className="dot"></span>
-        {flowType && <span>{flowType}</span>}
+        <div className={"dot flex flex-col justify-center justify-items-center " + flowType}><div>{day}</div></div>
       </div>
     );
   };
@@ -194,9 +224,10 @@ export function CalendarPage() {
         selectable={true}
         plugins={[dayGridPlugin, interactionPlugin]}
         dateClick={handleDateClick}
-        eventClick={openModalFromCalendar}
+        eventClick={openModalFromCalendar} // TODO: Display a different modal
         eventContent={(info) => <EventItem info={info} />}
         initialView="dayGridMonth"
+        dayCellContent={(info) => <DayCell info={info} />}
         events={events}
         aspectRatio={1}
       />
