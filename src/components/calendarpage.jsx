@@ -160,7 +160,7 @@ export function CalendarPage() {
   const EventItem = ({ info }) => {
     const { event } = info;
     const flowType = event.extendedProps.flowType;
-    const date = toUTCDate(event._instance.range.start);
+    const date = toUTCDate(event.start);
     const day = date.getDate();
     // The timestamp on the event is 00:00 GMT but in PST, so it's the previous day. 
     // Convert it to the GMT date.
