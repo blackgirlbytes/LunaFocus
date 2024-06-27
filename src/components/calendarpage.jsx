@@ -6,9 +6,7 @@ import CurrentPeriodControl from "@/components/current-period-control";
 import { PeriodDialog } from "@/components/period-dialog";
 import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from "@/lib/utils";
-import { configureProtocol } from '@/lib/dwn/configure';
-import { periodTrackerProtocol } from '@/lib/periodTrackerProtocol';
-import { createPeriodEntry, fetchAllPeriodEntries } from '@/lib/dwn/period-tracker';
+import PeriodTracker from '@/lib/dwn/period-tracker';
 import { useWeb5 } from '@/context/Web5Context';
 
 const formatDateForCalendar = (date) => date.toISOString().split('T')[0];
@@ -24,17 +22,22 @@ export function CalendarPage() {
 
   const [periods, setPeriods] = useState({});
   const [events, setEvents] = useState([]);
+  const [periodTracker, setPeriodTracker] = useState(null);
 
   useEffect(() => {
     const initialize = async () => {
       if (web5 && userDid) {
-        await configureProtocol(periodTrackerProtocol, web5, userDid);
-        await fetchAndSetEvents();
+        let tracker = await PeriodTracker(web5, userDid);
+        setPeriodTracker(tracker);
       }
-    };
+    }
+    
+    initialize();
+  }, [web5, userDid]);
 
-    const fetchAndSetEvents = async () => {
-      const entries = await fetchAllPeriodEntries(web5);
+  useEffect(() => {
+    const fetchAndSetEvents = async (periodTracker) => {
+      const entries = await periodTracker.fetchAllPeriodEntries(web5);
       const newEvents = entries.flatMap(entry => {
         return entry.dailyEntries.map(day => ({
           date: day.date,
@@ -47,8 +50,11 @@ export function CalendarPage() {
       setEvents(newEvents);
     };
 
-    initialize();
-  }, [web5, userDid]);
+    if (periodTracker) {      
+      fetchAndSetEvents(periodTracker);
+    }
+    
+  }, [periodTracker]);
 
   useEffect(() => {
     const newCurrentPeriod = findCurrentPeriod();
@@ -122,7 +128,7 @@ export function CalendarPage() {
       id: periodId
     };
 
-    createPeriodEntry(web5, userDid, periodEntryData);
+    periodTracker.createPeriodEntry(periodEntryData);
   }
 
   const EventItem = ({ info }) => {
