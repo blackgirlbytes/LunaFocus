@@ -6,7 +6,7 @@ import { PeriodDialog } from "@/components/period-dialog"
 import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from "@/lib/utils";
 import { configureProtocol, createPeriodEntry } from '@/lib/dwn-actions';
-import { Web5 } from '@web5/api';
+import { useWeb5 } from '@/context/Web5Context';
 
 // TODO: Read events from DWN
 const dummyPeriodStart = '2024-06-11';
@@ -20,8 +20,8 @@ export function CalendarPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [dialogPeriod, setDialogPeriod] = useState(null);
   const [currentPeriod, setCurrentPeriod] = useState(null);
-  const [web5, setWeb5] = useState(null);
-  const [userDid, setUserDid] = useState(null);
+
+  const { web5, userDid } = useWeb5();
 
   /**
    * Initialize the period and event data.
@@ -51,18 +51,14 @@ export function CalendarPage() {
   ].concat(dummyPeriodEvents));
 
   useEffect(() => {
-    const connectWeb5 = async () => {
-      const { web5, did: userDid } = await Web5.connect({});
-      setWeb5(web5);
-      setUserDid(userDid);
-      console.log(web5, userDid)
+    const installProtocol = async () => {
       if (web5 && userDid) {
         configureProtocol(web5, userDid);
       }
     };
 
-    connectWeb5();
-  }, [setWeb5, setUserDid]);
+    installProtocol();
+  }, [web5, userDid]);
 
   useEffect(() => {
     const newCurrentPeriod = findCurrentPeriod();
