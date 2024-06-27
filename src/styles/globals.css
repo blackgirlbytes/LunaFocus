@@ -43,6 +43,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Calendar */
 .calendar-page {
   margin: 10px;
+  padding-bottom: 20px;
 }
 
 .fc .fc-daygrid-day-events {
@@ -125,4 +126,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .current-period-info {
   text-align: center;
+}
+
+/** Statistics Section */
+.stats-section {
+  background-color: #e6e6fa;
+  padding: 20px;
+
+  h3 {
+    text-align: center;
+    padding-bottom: 10px;
+
+  }
 }
