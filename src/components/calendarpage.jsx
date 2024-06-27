@@ -6,7 +6,9 @@ import CurrentPeriodControl from "@/components/current-period-control";
 import { PeriodDialog } from "@/components/period-dialog";
 import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from "@/lib/utils";
-import { configureProtocol, createPeriodEntry, fetchAllPeriodEntries } from '@/lib/dwn-actions';
+import { configureProtocol } from '@/lib/dwn/configure';
+import { periodTrackerProtocol } from '@/lib/periodTrackerProtocol';
+import { createPeriodEntry, fetchAllPeriodEntries } from '@/lib/dwn/period-tracker';
 import { useWeb5 } from '@/context/Web5Context';
 
 const formatDateForCalendar = (date) => date.toISOString().split('T')[0];
@@ -26,7 +28,7 @@ export function CalendarPage() {
   useEffect(() => {
     const initialize = async () => {
       if (web5 && userDid) {
-        await configureProtocol(web5, userDid);
+        await configureProtocol(periodTrackerProtocol, web5, userDid);
         await fetchAndSetEvents();
       }
     };
