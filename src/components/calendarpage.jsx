@@ -3,8 +3,10 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import { useEffect, useState } from "react";
 import CurrentPeriodControl from "@/components/current-period-control"
 import { PeriodDialog } from "@/components/period-dialog"
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from "@/lib/utils";
+import { configureProtocol, createPeriodEntry } from '@/lib/dwn-actions';
+import { Web5 } from '@web5/api';
 
 // TODO: Read events from DWN
 const dummyPeriodStart = '2024-06-11';
@@ -18,6 +20,8 @@ export function CalendarPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [dialogPeriod, setDialogPeriod] = useState(null);
   const [currentPeriod, setCurrentPeriod] = useState(null);
+  const [web5, setWeb5] = useState(null);
+  const [userDid, setUserDid] = useState(null);
 
   /**
    * Initialize the period and event data.
@@ -45,6 +49,20 @@ export function CalendarPage() {
       periodId: dummyPeriodId,
     },
   ].concat(dummyPeriodEvents));
+
+  useEffect(() => {
+    const connectWeb5 = async () => {
+      const { web5, did: userDid } = await Web5.connect({});
+      setWeb5(web5);
+      setUserDid(userDid);
+      console.log(web5, userDid)
+      if (web5 && userDid) {
+        configureProtocol(web5, userDid);
+      }
+    };
+
+    connectWeb5();
+  }, [setWeb5, setUserDid]);
 
   useEffect(() => {
     const newCurrentPeriod = findCurrentPeriod();
@@ -137,23 +155,35 @@ export function CalendarPage() {
    * @param {String} periodId 
    */
   // TODO: Replace with data from the modal submission
+
   function addEvent(title, date, periodId) {
-    console.log("Adding a specific event");
-    console.log("events: ", events, title, date);
+    const newEvent = {
+      date: date,
+      title: title,
+      periodId: periodId,
+    };
+
     setEvents([
       ...events,
-      {
-        date: date,
-        title: title,
-        periodId: periodId,
-      }
+      newEvent
     ]);
-    console.log("events: ", events);
+
+    const periodEntryData = {
+      startDate: date,
+      endDate: date,
+      duration: 1,
+      dailyEntries: [
+        {
+          date: date,
+        }
+      ],
+      id: periodId
+    };
+
+    createPeriodEntry(web5, userDid, periodEntryData);
   }
 
   function addEvents(dates, periodId) {
-    console.log("Adding events");
-    console.log("events: ", events, dates);
     const newEvents = dates.map((date) => {
       return {
         date: date,
@@ -161,11 +191,23 @@ export function CalendarPage() {
         periodId: periodId,
       }
     });
+
     setEvents([
       ...events,
       ...newEvents,
     ]);
-    console.log("events: ", events);
+
+    const periodEntryData = {
+      startDate: periods[periodId].startDate,
+      endDate: dates[dates.length - 1],
+      duration: dates.length,
+      dailyEntries: dates.map(date => ({
+        date: date,
+      })),
+      id: periodId
+    };
+
+    createPeriodEntry(web5, userDid, periodEntryData);
   }
 
   const EventItem = ({ info }) => {
@@ -182,7 +224,7 @@ export function CalendarPage() {
     console.log("onDialogClose");
     setIsOpen(false);
     // TODO: Update the event if the localStartDate changed
-    
+
     // TODO: Add events between localStartDate and localEndDate
     endExistingPeriod(dialogPeriod.id, localEndDate);
   }
@@ -230,7 +272,7 @@ export function CalendarPage() {
       {/* <button className="btn" onClick={openModal}>open modal</button> */}
       {/* <Modal> */}
 
-        {/* <div className="modal-box">
+      {/* <div className="modal-box">
         <h3 className="font-bold text-lg">Hello Tal!</h3>
         <p className="py-4">Press ESC key or click the button below to close</p>
         <div className="modal-action">
