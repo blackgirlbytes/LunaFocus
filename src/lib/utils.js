@@ -21,7 +21,7 @@ export function formatDate(date) {
   return [year, month, day].join('-');
 };
 
-// YYYY-MM-DD string to YYYY-MM-DD date without time zone (aka in UTC)
+// YYYY-MM-DD string to YYYY-MM-DD date object with time set to 00:00:00 in browser time
 export function stringToDate(dateString) {
    // Split the input string into components
    const parts = dateString.split('-');
@@ -29,12 +29,11 @@ export function stringToDate(dateString) {
    const month = parseInt(parts[1], 10) - 1; // Months are 0-based in JavaScript Date
    const day = parseInt(parts[2], 10);
  
-   // Create a Date object in UTC
    const date = new Date(year, month, day);
    return date;
 }
 
-// Date object to Date object in UTC time
+// Date object to Date object with the UTC date and time set to 00:00:00 in browser time
 // Ex. For day cell #11:
 //     Input: Mon Jun 10 2024 17:00:00 GMT-0700 (Pacific Daylight Time)
 //     Output: Tue Jun 11 2024 00:00:00 GMT-0700 (Pacific Daylight Time)
