@@ -63,11 +63,27 @@ h1, h2, h3, h4, h5, h6 {
   display: block; /* ?? */
 
   .dot {
-    height: 20px;
-    width: 20px;
+    height: 45px;
+    width: 45px;
     border-radius: 50%;
-    display: inline-block;
-    background-color: red;
+    display: flex;
+    background-color: #ed4063;
+
+    div {
+      text-align: center;
+      font-size: 25px;
+    }
+  }
+  .dot.heavy {
+    background-color: #9f0121;
+  }
+
+  .dot.medium {
+    background-color: #ed4063;
+  }
+
+  .dot.light {
+    background-color: #f28399;
   }
 
   p {
