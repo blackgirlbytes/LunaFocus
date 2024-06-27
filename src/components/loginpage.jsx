@@ -66,6 +66,22 @@ export function LoginPage() {
             />
           </div>
 
+          <div className="form-control w-full mt-4">
+            <label className="label">
+              <span className="label-text text-base-content">Select Your Role</span>
+            </label>
+            <select
+              value={userType}
+              onChange={handleUserTypeChange}
+              className="select select-bordered w-full"
+            >
+              <option value="" disabled>Select one</option>
+              <option value="self">Self</option>
+              <option value="provider">Provider</option>
+              <option value="partner">Partner</option>
+            </select>
+          </div>
+
           {/* Set Username Button */}
           <button type="submit" className={`btn mt-2 w-full btn-accent`}>
             Set Username
