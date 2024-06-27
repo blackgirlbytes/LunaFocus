@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import CurrentPeriodControl from "@/components/current-period-control";
 import { PeriodDialog } from "@/components/period-dialog";
 import { v4 as uuidv4 } from 'uuid';
-import { formatDate } from "@/lib/utils";
 import PeriodTracker from '@/lib/dwn/period-tracker';
 import { formatDate, stringToDate, toUTCDate } from "@/lib/utils";
 import { useWeb5 } from '@/context/Web5Context';
