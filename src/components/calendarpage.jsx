@@ -39,7 +39,8 @@ export function CalendarPage() {
         return entry.dailyEntries.map(day => ({
           date: day.date,
           title: `day-${uuidv4()}`,
-          periodId: entry.id
+          periodId: entry.id,
+          flowType: day.flowType,
         }));
       });
 
@@ -61,6 +62,7 @@ export function CalendarPage() {
       id: periodId,
       startDate: startDate,
       endDate: null,
+      dailyEntries: [],
     };
 
     setPeriods((prevPeriods) => ({
@@ -74,10 +76,8 @@ export function CalendarPage() {
   }
 
   function calculatePeriodDays(startDate, endDate) {
-    const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
-    const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
-    let start = new Date(startYear, startMonth - 1, startDay);
-    const end = new Date(endYear, endMonth - 1, endDay);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
     const days = [];
     for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
       days.push(formatDate(d));
@@ -98,14 +98,13 @@ export function CalendarPage() {
     return periods[periodId];
   }
 
-  function addEvents(dates, periodId) {
-    const newEvents = dates.map((date) => {
-      return {
-        date: date,
-        title: `day-${uuidv4()}`,
-        periodId: periodId,
-      };
-    });
+  function addEvents(dates, periodId, flowTypes) {
+    const newEvents = dates.map((date) => ({
+      date: date,
+      title: `day-${uuidv4()}`,
+      periodId: periodId,
+      flowType: flowTypes[date] || null, // Set to null if not defined
+    }));
 
     setEvents((prevEvents) => [
       ...prevEvents,
@@ -118,6 +117,7 @@ export function CalendarPage() {
       duration: dates.length,
       dailyEntries: dates.map(date => ({
         date: date,
+        flowType: flowTypes[date] || null, // Set to null if not defined
       })),
       id: periodId
     };
@@ -127,14 +127,16 @@ export function CalendarPage() {
 
   const EventItem = ({ info }) => {
     const { event } = info;
+    const flowType = event.extendedProps.flowType;
     return (
       <div>
         <span className="dot"></span>
+        {flowType && <span>{flowType}</span>}
       </div>
     );
   };
 
-  function onDialogClose(localStartDate, localEndDate) {
+  function onDialogClose(localStartDate, localEndDate, flowTypes) {
     setIsOpen(false);
     const periodId = dialogPeriod.id;
 
@@ -144,11 +146,15 @@ export function CalendarPage() {
         ...prevPeriods[periodId],
         startDate: localStartDate,
         endDate: localEndDate,
+        dailyEntries: calculatePeriodDays(localStartDate, localEndDate).map(date => ({
+          date: date,
+          flowType: flowTypes[date] || null,
+        })),
       }
     }));
 
     const days = calculatePeriodDays(localStartDate, localEndDate);
-    addEvents(days, periodId);
+    addEvents(days, periodId, flowTypes);
   }
 
   const onPeriodControlChange = (date) => {
