@@ -6,17 +6,20 @@ import Username from '@/lib/dwn/username';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const { web5, userDid } = useWeb5();
+  const { web5, userDid, isWeb5Connected } = useWeb5();
   const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(username ? false : true);
   const fetchUsername = async () => {
     if (web5 && userDid) {
         try {
             let userModule = await Username(web5, userDid);
             const fetchedUsername = await userModule.fetchUsername();
             setUsername(fetchedUsername);
+            setIsLoading(false);
             return fetchedUsername;
         } catch (error) {
             console.error('Error fetching username:', error);
+            setIsLoading(false);
         }
     }
     else {
@@ -25,13 +28,13 @@ export const UserProvider = ({ children }) => {
   };
   
   useEffect(() => {
-    if (!username) {
+    if (!username && isWeb5Connected) {
       fetchUsername();
     }
-  }, [web5, userDid]);
+  }, [web5, userDid, isWeb5Connected]);
 
   return (
-    <UserContext.Provider value={{ username, setUsername }}>
+    <UserContext.Provider value={{ username, setUsername, isLoading }}>
       {children}
     </UserContext.Provider>
   );
