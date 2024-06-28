@@ -60,7 +60,7 @@ export function LandingPage() {
                     Get Started
                   </button>
                   <Link
-                    href="/Login"
+                    href="/DataPrivacy"
                     className="inline-flex h-10 items-center justify-center rounded-md border border-[#ADD8E6] bg-[#FFFFFF] px-8 text-sm font-medium shadow-md transition-colors hover:bg-[#E6E6FA] hover:text-[#333333] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ADD8E6] disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}
                   >
