@@ -35,6 +35,22 @@ const PeriodTracker = async function(web5, userDid) {
     }
   }
 
+  async function updatePeriodEntry(updatedPeriod) {
+    // Get the record
+    const { record } = await web5.dwn.records.read({
+      message: {
+        filter: {
+          recordId: updatedPeriod.recordId
+        }
+      }
+    });
+
+    const toWrite = {...updatedPeriod};
+    delete toWrite.recordId; // Don't include the recordId in the data to write
+    const {status} = await record.update({ data: updatedPeriod });
+    console.log('[updatePeriodEntry] update status: ', status);
+  }
+
   async function tryLookupEntry({id}) {
     console.log('trying to lookup entry for id: ', id);
     try {
@@ -68,7 +84,10 @@ const PeriodTracker = async function(web5, userDid) {
         return [];
     }
   
-    const entries = await Promise.all(records.map(async record => await record.data.json()));
+    const entries = await Promise.all(records.map(async record => {
+      const data = await record.data.json()
+      return {...data, recordId: record.id};
+    }));
     console.log("entries: ", entries)
     console.log("record ids: ", records.map(record => record.id))
     await entries.forEach(tryLookupEntry)
@@ -78,6 +97,7 @@ const PeriodTracker = async function(web5, userDid) {
 
   return {
     createPeriodEntry,
+    updatePeriodEntry,
     fetchAllPeriodEntries
   };
 };
