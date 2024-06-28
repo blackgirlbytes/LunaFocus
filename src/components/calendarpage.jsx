@@ -16,6 +16,7 @@ export function CalendarPage() {
   const [dialogTitle, setDialogTitle] = useState('Dialog');
   const [isOpen, setIsOpen] = useState(false);
   const [dialogPeriod, setDialogPeriod] = useState(null);
+  const [dialogStartDate, setDialogStartDate] = useState(null);
   const [currentPeriod, setCurrentPeriod] = useState(null);
 
   const { web5, userDid } = useWeb5();
@@ -48,13 +49,14 @@ export function CalendarPage() {
       });
       setEvents(newEvents);
 
-      const newPeriods = entries.flatMap(entry => {
-        return {
+      const newPeriods = entries.reduce((acc, entry) => {
+        acc[entry.id] = {
           id: entry.id,
           startDate: entry.startDate,
           endDate: entry.endDate,
-        }
-      });
+        };
+        return acc;
+      }, {});
       setPeriods(newPeriods);
     };
 
@@ -71,20 +73,7 @@ export function CalendarPage() {
   }, [periods]);
 
   function startNewPeriod(startDate) {
-    const periodId = uuidv4();
-    const newPeriod = {
-      id: periodId,
-      startDate: startDate,
-      endDate: null,
-      dailyEntries: [],
-    };
-
-    setPeriods((prevPeriods) => ({
-      ...prevPeriods,
-      [periodId]: newPeriod,
-    }));
-
-    setDialogPeriod(newPeriod);
+    setDialogStartDate(startDate);
     setDialogTitle('Set Period Dates');
     setIsOpen(true);
   }
@@ -102,22 +91,29 @@ export function CalendarPage() {
     return periods[periodId];
   }
 
-  function addEvents(dates, periodId, flowTypes) {
-    const newEvents = dates.map((date) => ({
-      date: date,
-      title: `day-${uuidv4()}`,
-      periodId: periodId,
-      flowType: flowTypes[date] || null, // Set to null if not defined
-    }));
+  function addEvents(dates, periodId, flowTypes, isNewPeriod) {
+    const datesToAdd = dates.filter(date => {
+      return !events.some(event => event.date === date);
+    });
+    const newEvents = datesToAdd.map((date) => (
+      {
+        date: date,
+        title: `day-${uuidv4()}`,
+        periodId: periodId,
+        flowType: flowTypes[date] || null, // Set to null if not defined
+      }
+    ));
 
     setEvents((prevEvents) => [
       ...prevEvents,
       ...newEvents,
     ]);
 
+    // TODO: Find events to delete and delete them
+
     const periodEntryData = {
-      startDate: periods[periodId].startDate,
-      endDate: dates[dates.length - 1],
+      startDate: dates ? dates[0] : null,
+      endDate: dates ? dates[dates.length - 1] : null,
       duration: dates.length,
       dailyEntries: dates.map(date => ({
         date: date,
@@ -126,7 +122,21 @@ export function CalendarPage() {
       id: periodId
     };
 
-    periodTracker.createPeriodEntry(periodEntryData);
+    if (isNewPeriod) {
+      const periodRecordId = periodTracker.createPeriodEntry(periodEntryData);
+      // Edit the Period object in the state to contain the recordId
+      setPeriods((prevPeriods) => ({
+        ...prevPeriods,
+        [periodId]: {
+          ...prevPeriods[periodId],
+          recordId: periodRecordId,
+        },
+      }));
+    } else {
+      const periodRecordId = periods[periodId].recordId;
+      console.log("period Record ID", periodRecordId); // TODO: This is a promise
+      periodTracker.editPeriodEntry(periodRecordId, periodEntryData);
+    }
   }
 
   const EventItem = ({ info }) => {
@@ -151,35 +161,65 @@ export function CalendarPage() {
 
   function onDialogClose(localStartDate, localEndDate, flowTypes) {
     setIsOpen(false);
-    const periodId = dialogPeriod.id;
 
-    setPeriods((prevPeriods) => ({
-      ...prevPeriods,
-      [periodId]: {
-        ...prevPeriods[periodId],
+    // Create new period
+    if (!dialogPeriod) {
+      console.log("Creating new period");
+      const periodId = uuidv4();
+      const newPeriod = {
+        id: periodId,
         startDate: localStartDate,
         endDate: localEndDate,
         dailyEntries: calculatePeriodDays(localStartDate, localEndDate).map(date => ({
           date: date,
           flowType: flowTypes[date] || null,
         })),
-      }
-    }));
+      };
+  
+      setPeriods((prevPeriods) => ({
+        ...prevPeriods,
+        [periodId]: newPeriod,
+      }));
 
-    const days = calculatePeriodDays(localStartDate, localEndDate);
-    addEvents(days, periodId, flowTypes);
+      const days = calculatePeriodDays(localStartDate, localEndDate);
+      const isNewPeriod = true;
+      addEvents(days, periodId, flowTypes, isNewPeriod);
+    } else {
+      console.log("Editing existing period");
+      // Update existing period
+      const periodId = dialogPeriod.id;
+
+      setPeriods((prevPeriods) => ({
+        ...prevPeriods,
+        [periodId]: {
+          ...prevPeriods[periodId],
+          startDate: localStartDate,
+          endDate: localEndDate,
+          dailyEntries: calculatePeriodDays(localStartDate, localEndDate).map(date => ({
+            date: date,
+            flowType: flowTypes[date] || null,
+          })),
+        }
+      }));
+
+      const days = calculatePeriodDays(localStartDate, localEndDate);
+      // This needs to be updated to only add new events and remove old events
+      // and edit the existing period DWN record
+      const isNewPeriod = false;
+      addEvents(days, periodId, flowTypes, isNewPeriod);
+    }
   }
 
   const onPeriodControlChange = (date) => {
     if (date) {
       startNewPeriod(formatDate(date));
     } else {
-      openModalFromButton(currentPeriod.id);
+      openModal("Current Period", currentPeriod['id']);
     }
   }
 
   const openModal = (eventTitle, periodId) => {
-    const period = findPeriodById(periodId);
+    const period = findPeriodById(periodId); // may be null
     setDialogPeriod(period);
     setDialogTitle(eventTitle);
     setIsOpen(true);
@@ -208,7 +248,7 @@ export function CalendarPage() {
         aspectRatio={1}
       />
       <CurrentPeriodControl startDate={periodStartDate} onPeriodControlChange={onPeriodControlChange} />
-      {isOpen && <PeriodDialog title={dialogTitle} period={dialogPeriod} onClose={onDialogClose} />}
+      {isOpen && <PeriodDialog title={dialogTitle} period={dialogPeriod} startDate={dialogStartDate} onClose={onDialogClose} />}
     </div>
   );
 }

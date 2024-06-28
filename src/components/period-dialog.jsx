@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { DynamicDialog } from "@/components/modal";
 import { stringToDate, formatDate, calculatePeriodDays } from "@/lib/utils";
 
-export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
-  const [localStartDate, setLocalStartDate] = useState(period?.startDate || "");
+export const PeriodDialog = ({ dialogTitle, period, startDate, onClose }) => {
+  const [localStartDate, setLocalStartDate] = useState(period?.startDate || startDate || "");
   const [localEndDate, setLocalEndDate] = useState(period?.endDate || "");
   const [flowTypes, setFlowTypes] = useState({});
 
