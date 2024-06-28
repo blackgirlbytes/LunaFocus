@@ -17,7 +17,7 @@ const Header = () => {
           Features
         </Link>
         <Link
-          href="DataPrivacy"
+          href="/DataPrivacy"
           className="text-sm font-medium hover:text-[#000080] text-[#333333]"
           prefetch={false}>
           Privacy
