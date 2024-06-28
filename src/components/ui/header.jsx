@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from "next/link"
 import BabyIcon from "@/components/ui/icons/baby";
+import CalendarIcon from "@/components/ui/icons/calendar";
 
 const Header = () => {
   return (
@@ -10,6 +11,12 @@ const Header = () => {
         <span className="sr-only">LunaFocus</span>
       </Link>
       <nav className="ml-auto flex gap-4 sm:gap-6">
+        <Link
+          href="/"
+          className="text-sm font-medium hover:text-[#000080] text-[#333333]"
+          prefetch={false}>
+          My Calendar
+        </Link>
         <Link
           href="/"
           className="text-sm font-medium hover:text-[#000080] text-[#333333]"

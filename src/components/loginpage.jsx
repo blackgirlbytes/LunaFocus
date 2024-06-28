@@ -1,21 +1,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useWeb5 } from '@/context/Web5Context';
 import { useUser } from '@/context/UserContext';
-import Username from '@/lib/dwn/username';
 
 export function LoginPage() {
-  const { web5, userDid } = useWeb5();
-  const { username, setUsername } = useUser();
-  const [userType, setUserType] = useState('');
+  const { currentUsername, storeUsername } = useUser();
   const router = useRouter();
 
-  async function storeUsername() {
-    if (web5 && userDid && username) {
+  async function submitUsername(username) {
+    console.log('submit user: ', username)
+    if (username) {
       try {
-        const user = await Username(web5, userDid);
-        await user.createUsernameEntry({ username });
-        setUsername(username);
+        storeUsername(username);
         router.push('/calendar');
       } catch (error) {
         console.error('Error storing username:', error);
@@ -70,11 +65,9 @@ export function LoginPage() {
             </div>
           </div>
           <LoginForm
-            username={username}
-            setUsername={setUsername}
-            userType={userType}
-            setUserType={setUserType}
-            storeUsername={storeUsername}
+            currentUsername={currentUsername}
+            setUsername={submitUsername}
+            submitUsername={submitUsername}
           />
         </div>
       </div>
@@ -82,7 +75,10 @@ export function LoginPage() {
   );
 }
 
-const LoginForm = ({ username, setUsername, userType, setUserType, storeUsername }) => {
+const LoginForm = ({ currentUsername, submitUsername }) => {
+  const [username, setUsername] = useState(currentUsername);
+  const [userType, setUserType] = useState('');
+  
   const handleUserTypeChange = (e) => {
     setUserType(e.target.value);
   };
@@ -94,7 +90,7 @@ const LoginForm = ({ username, setUsername, userType, setUserType, storeUsername
   return (
     <div className="py-24 px-10">
       <h2 className="text-2xl font-semibold mb-2 text-center">LunaFocus Username</h2>
-      <form onSubmit={(e) => { e.preventDefault(); storeUsername(); }}>
+      <form onSubmit={(e) => { e.preventDefault(); submitUsername(username); }}>
         {/* Username */}
         <div className="form-control w-full mt-4">
           <label className="label">

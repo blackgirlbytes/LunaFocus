@@ -2,11 +2,11 @@ import { useUser } from '@/context/UserContext';
 import Link from "next/link"
 
 export function UsernameDisplay() {
-    const { username } = useUser();
+    const { currentUsername } = useUser();
     return (
-        username ? (
+        currentUsername ? (
             <div className="p-5">
-                <h1 className="text-5xl font-bold">Hi, {username} 👋 </h1>
+                <h1 className="text-5xl font-bold">Hi, {currentUsername} 👋 </h1>
             </div>
         ) : (
             <div className="p-5">
