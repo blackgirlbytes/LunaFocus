@@ -1,8 +1,10 @@
 import React from 'react';
 import Link from "next/link"
 import BabyIcon from "@/components/ui/icons/baby";
+import { useUser } from '@/context/UserContext';
 
 const Header = () => {
+  const user = useUser();
   return (
     <header className="px-4 lg:px-6 h-14 flex items-center bg-[#E6E6FA] shadow-md">
       <Link href="/" className="flex items-center justify-center" prefetch={false}>
@@ -10,6 +12,17 @@ const Header = () => {
         <span className="sr-only">LunaFocus</span>
       </Link>
       <nav className="ml-auto flex gap-4 sm:gap-6">
+        {
+          // uncomment to only show calendar link if you're logged in
+          // user.username ? (
+            <Link
+              href="/calendar"
+              className="text-sm font-medium hover:text-[#000080] text-[#333333]"
+              prefetch={false}>
+              My Calendar
+            </Link>
+          // ) : null
+        }
         <Link
           href="/"
           className="text-sm font-medium hover:text-[#000080] text-[#333333]"
