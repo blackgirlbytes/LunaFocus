@@ -17,38 +17,49 @@ const Username = async function (web5, userDid) {
 
     await configureProtocol(userProtocol, web5, userDid);
 
-    async function createUsernameEntry(data) {
-        const { record, status } = await web5.dwn.records.create({
-            data: data,
-            message: {
-                recipient: userDid,
-                schema: 'https://luna-focus.vercel.app/usernameSchema',
-                dataFormat: 'application/json',
-                protocol: userProtocol.protocol,
-                protocolPath: 'username'
-            }
-        });
+    async function createOrUpdateUsernameEntry(data) {
+        const records = await fetchUsernameRecords();
 
-        if (status.code !== 202) {
-            console.error('Failed to create period entry:', status);
+        console.log('Records are ', records);
+
+        if (records.length > 0) {
+            const entry = await records[0];
+            // Get the record
+            const { record } = await web5.dwn.records.read({
+                message: {
+                filter: {
+                    recordId: entry.id
+                }
+                }
+            });
+            const {status} = await record.update({ data: data });
+            console.log(entry)
+            console.log('fetching username', entry);
+            return entry.username;
         } else {
-            console.log('Username entry created successfully:', record, await record.data.text());
+            const { record, status } = await web5.dwn.records.create({
+                data: data,
+                message: {
+                    recipient: userDid,
+                    schema: 'https://luna-focus.vercel.app/usernameSchema',
+                    dataFormat: 'application/json',
+                    protocol: userProtocol.protocol,
+                    protocolPath: 'username'
+                }
+            });
+
+            if (status.code !== 202) {
+                console.error('Failed to create period entry:', status);
+            } else {
+                console.log('Username entry created successfully:', record, await record.data.text());
+            }
         }
     }
 
     async function fetchUsername() {
-        const { records, status } = await web5.dwn.records.query({
-            message: {
-                filter: {
-                    schema: 'https://luna-focus.vercel.app/usernameSchema'
-                }
-            }
-        });
+        const records = await fetchUsernameRecords();
 
-        if (status.code !== 200) {
-            console.error('Failed to fetch user entries:', status);
-            return [];
-        }
+        console.log('Records are ', records);
 
         if (records.length > 0) {
             const entry = await records[0].data.json();
@@ -60,9 +71,34 @@ const Username = async function (web5, userDid) {
         }
     }
 
+    async function fetchUsernameRecords() {
+
+        console.log('HereHereHere ');
+
+        const { records, status } = await web5.dwn.records.query({
+            message: {
+                filter: {
+                    schema: 'https://luna-focus.vercel.app/usernameSchema'
+                }
+            }
+        });
+
+        console.log('Status code is ', status.code);
+
+        if (status.code !== 200) {
+            console.error('Failed to fetch user entries:', status);
+            return [];
+        } else {
+            console.log('Fetched user records:', records);
+
+            return records;
+        }
+    }
+
     return {
-        createUsernameEntry,
-        fetchUsername
+        createOrUpdateUsernameEntry,
+        fetchUsername,
+        fetchUsernameRecords
     };
 };
 

@@ -14,7 +14,7 @@ export function LoginPage() {
     if (web5 && userDid && username) {
       try {
         const user = await Username(web5, userDid);
-        await user.createUsernameEntry({ username });
+        await user.createOrUpdateUsernameEntry({ username });
         setUsername(username);
         router.push('/calendar');
       } catch (error) {
