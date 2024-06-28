@@ -5,8 +5,9 @@ import { stringToDate, formatDate, calculatePeriodDays } from "@/lib/utils";
 export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
   const [localStartDate, setLocalStartDate] = useState(period?.startDate || "");
   const [localEndDate, setLocalEndDate] = useState(period?.endDate || "");
+  // const [localPeriodId, setLocalPeriodId] = useState(period?.id);
   const [flowTypes, setFlowTypes] = useState({});
-
+  console.log('[PeriodDialog] periodId: ', period?.id);
   useEffect(() => {
     if (period && period.dailyEntries) {
       const initialFlowTypes = {};
@@ -60,6 +61,6 @@ export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
       ))}
     </div>
   );
-
+  console.log("dialogTitle: ", dialogTitle);
   return (<DynamicDialog title={dialogTitle} dialogContent={dialogContent} onClose={handleClose} />);
 }
