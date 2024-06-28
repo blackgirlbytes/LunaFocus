@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWeb5 } from '@/context/Web5Context';
+import { useUser } from '@/context/UserContext';
 import Username from '@/lib/dwn/username';
 
 export function LoginPage() {
   const { web5, userDid } = useWeb5();
-  const [username, setUsername] = useState('');
+  const { username, setUsername } = useUser();
   const [userType, setUserType] = useState('');
   const router = useRouter();
 
@@ -14,6 +15,7 @@ export function LoginPage() {
       try {
         const user = await Username(web5, userDid);
         await user.createUsernameEntry({ username });
+        setUsername(username);
         router.push('/calendar');
       } catch (error) {
         console.error('Error storing username:', error);
