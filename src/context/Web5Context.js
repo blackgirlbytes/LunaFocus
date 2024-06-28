@@ -11,7 +11,7 @@ export const Web5Provider = ({ children }) => {
   useEffect(() => {
     const connectWeb5 = async () => {
       try {
-        const { web5, did: userDid } = await Web5.connect({});
+        const { web5, did: userDid } = await Web5.connect({sync: '2s'});
         setWeb5(web5);
         setUserDid(userDid);
         console.log('Web5 connected', web5, userDid);

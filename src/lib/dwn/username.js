@@ -56,7 +56,7 @@ const Username = async function (web5, userDid) {
             console.log('fetching username', entry);
             return entry.username;
         } else {
-            return "User";
+            console.log('no username found');
         }
     }
 

@@ -1,30 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useWeb5 } from '@/context/Web5Context';
-import Username from '@/lib/dwn/username';
+import { useUser } from '@/context/UserContext';
+import Link from "next/link"
 
 export function UsernameDisplay() {
-    const { web5, userDid } = useWeb5();
-    const [username, setUsername] = useState('');
-
-    useEffect(() => {
-        const fetchUsername = async () => {
-            if (web5 && userDid) {
-                try {
-                    let userModule = await Username(web5, userDid);
-                    const fetchedUsername = await userModule.fetchUsername();
-                    setUsername(fetchedUsername);
-                } catch (error) {
-                    console.error('Error fetching username:', error);
-                }
-            }
-        };
-
-        fetchUsername();
-    }, [web5, userDid]);
-
+    const { username } = useUser();
     return (
-        <div className="p-5">
-            <h1 className="text-5xl font-bold">Hi, {username} 👋 </h1>
-        </div>
+        username ? (
+            <div className="p-5">
+                <h1 className="text-5xl font-bold">Hi, {username} 👋 </h1>
+            </div>
+        ) : (
+            <div className="p-5">
+                <h1 className="text-5xl font-bold">
+                    <Link
+                        href="/Login"
+                        className="text-sm font-medium hover:text-[#000080] text-[#333333]"
+                        prefetch={false}>
+                        Click here to login
+                    </Link>
+                </h1>
+            </div>
+        )
+
     );
 }
