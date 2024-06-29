@@ -10,9 +10,7 @@ export const calculatePeriodDayNumber = (startDate) => {
 };
 
 export default function CurrentPeriodControl({ currentPeriod, onPeriodControlChange }) {
-  console.log('currentPeriod: ', currentPeriod);
   const startDate = currentPeriod?.startDate;
-  console.log('[CurrentPeriodControl] startDate: ', startDate);
   return !startDate ? (
     <div className="flex justify-center period-control">
       <button className="btn btn-primary" onClick={() => onPeriodControlChange(new Date())}>My period started</button>
