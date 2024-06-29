@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ShareDataDialog from '@/components/share-data-dialog';
 
 export function Stats() {
+  // THESE STATS ARE A PLACEHOLDER. Although we did create an algorithm, it's a notebook only accessible by CashApp. If you need the model and work at cashapp, reach out. https:/[REDACTED].notebooks.googleusercontent.com/lab/tree/nfs/natashaa/hack24/PredictNextCycleStart.ipynb
   return (
     <div className="stats stats-vertical lg:stats-horizontal shadow">
       <div className="stat">
@@ -68,12 +69,11 @@ export function Stats() {
 }
 
 export function StatsPage() {
-  const [providerDid, setProviderDid] = useState('');
-
+  const [recipientDid, setRecipientDid] = useState('');
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle the share data logic here
-    console.log('Provider DID:', providerDid);
+    console.log('Recipient DID:', recipientDid);
     document.getElementById('share_data_modal').close();
   };
 
@@ -89,8 +89,8 @@ export function StatsPage() {
         </button>
       </div>
       <ShareDataDialog
-        providerDid={providerDid}
-        setProviderDid={setProviderDid}
+        recipientDid={recipientDid}
+        setRecipientDid={setRecipientDid}
         handleSubmit={handleSubmit}
       />
     </div>
