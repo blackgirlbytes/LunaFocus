@@ -8,8 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { formatDate, stringToDate, toUTCDate } from "@/lib/utils";
 import { usePeriods } from '@/context/PeriodContext';
 
-const formatDateForCalendar = (date) => date.toISOString().split('T')[0];
-
 export function CalendarPage() {
   const [dialogTitle, setDialogTitle] = useState('Dialog');
   const [isOpen, setIsOpen] = useState(false);
@@ -19,9 +17,7 @@ export function CalendarPage() {
 
 
   const periodToCalendarEvents = (period) => {
-    console.log("[periodToCalendarEvents] period: ", period);
     if (!period.dailyEntries) return [];
-    console.log("[periodToCalendarEvents] not exiting early.");
     return period.dailyEntries.map(day => ({
       date: day.date,
       title: `day-${uuidv4()}`,
@@ -30,56 +26,15 @@ export function CalendarPage() {
     }));
   }
 
-  function periodForDate(date) {
-    if (!date) return null;
-    const compareTime = date.getTime();
-    return Object.values(periods).find(period => {
-      const startDate = stringToDate(period.startDate);
-      const endDate = stringToDate(period.endDate);
-      return startDate.getTime() <= compareTime && endDate.getTime() >= compareTime
-    });
-  }
-
   useEffect(() => {
-    console.log("periods: ", periods );
     const updateEvents = () => {
       const newEvents =  Object.values(periods)?.flatMap(periodToCalendarEvents)
-      console.log("newEvents: ", newEvents );
       setEvents(newEvents);
     }
 
     updateEvents();
   }, [periods])
   
-  // function startNewPeriod(startDate) {
-  //   const periodId = uuidv4();
-  //   setPeriods((prevPeriods) => ({
-  //     ...prevPeriods,
-  //     [periodId]: {
-  //       id: periodId,
-  //       startDate: startDate,
-  //       endDate: null,
-  //       dailyEntries: [],
-  //     },
-  //   }));
-  //   openModal('Set Period Dates', periodId);
-  // }
-
-
-  function addOrUpdateEvents(dates, periodId, flowTypes) {
-    const newOrUpdatedEvents = dates.map((date) => ({
-      date: date,
-      title: `day-${uuidv4()}`,
-      periodId: periodId,
-      flowType: flowTypes[date] || null, // Set to null if not defined
-    }));
-
-    setEvents((prevEvents) => [
-      ...prevEvents.filter(event => event.periodId !== periodId), // events from other periods
-      ...newOrUpdatedEvents,
-    ]);
-  }
-
 
   function onClose(modalData) {
     const periodId = dialogPeriod?.id || uuidv4();

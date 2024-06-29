@@ -61,3 +61,5 @@ export function toUTCDate(date) {
   const utcDate = new Date(year, month, day);
   return utcDate;
 }
+
+export const formatDateForCalendar = (date) => date.toISOString().split('T')[0];

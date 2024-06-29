@@ -53,6 +53,16 @@ export const PeriodsProvider = ({ children }) => {
     return !mostRecentPeriod?.endDate ? mostRecentPeriod : null; 
   }
 
+  function periodForDate(date) {
+    if (!date) return null;
+    const compareTime = date.getTime();
+    return Object.values(periods).find(period => {
+      const startDate = stringToDate(period.startDate);
+      const endDate = stringToDate(period.endDate);
+      return startDate.getTime() <= compareTime && endDate.getTime() >= compareTime
+    });
+  }
+
   function addOrUpdatePeriod({localStartDate, localEndDate, flowTypes, periodId}) {
     const days = calculatePeriodDays(localStartDate, localEndDate || new Date());
     console.log("[addOrUpdatePeriod] days: ", days);
@@ -75,7 +85,7 @@ export const PeriodsProvider = ({ children }) => {
   }
 
   return (
-    <PeriodsContext.Provider value={{ periods, findCurrentPeriod, addOrUpdatePeriod }}>
+    <PeriodsContext.Provider value={{ periods, findCurrentPeriod, periodForDate, addOrUpdatePeriod }}>
       {children}
     </PeriodsContext.Provider>
   );
