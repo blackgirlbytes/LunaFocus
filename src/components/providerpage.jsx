@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 export function ProviderPage() {
     const [periodTracker, setPeriodTracker] = useState(null);
     const { web5, userDid } = useWeb5();
-    const fakeDid = 'did:dht:cy1d8xntyiockcssgpfu5ey3rasyiunr667byx96yums7dohwj7o'; // Replace with actual user DID
     const [entries, setEntries] = useState([]);
 
     useEffect(() => {
@@ -22,8 +21,8 @@ export function ProviderPage() {
     useEffect(() => {
         const fetchAndSetEvents = async (periodTracker) => {
             const entries = await periodTracker.fetchEntriesFromSender(userDid);
-
             setEntries(entries);
+
         };
 
         if (periodTracker) {
@@ -34,7 +33,9 @@ export function ProviderPage() {
     return (
         <div className="provider-display p-4 w-full max-w-3xl mx-auto">
             <h1 className="text-3xl font-bold mb-4 text-center">Insights Shared with You</h1>
-            <p className="mb-8 text-center">From: {fakeDid}</p>
+            {entries.length > 0 && (
+                <p className="mb-8 text-center">From: {entries[0].senderDid}</p>
+            )}
             <div className="period-data mt-8 w-full">
                 {entries.length === 0 ? (
                     <p className="text-center text-gray-500">No entries shared with you yet.</p>
