@@ -26,8 +26,6 @@ export const PeriodsProvider = ({ children }) => {
     const fetchPeriods = async (periodTracker) => {
       const fetchedPeriods = await periodTracker.fetchAllPeriodEntries();
       setPeriods(fetchedPeriods);
-      // TODO: move
-      // setEvents(Object.values(fetchedPeriods)?.flatMap(periodToCalendarEvents));
     };
 
     if (periodTracker) {      
@@ -65,7 +63,6 @@ export const PeriodsProvider = ({ children }) => {
 
   function addOrUpdatePeriod({localStartDate, localEndDate, flowTypes, periodId}) {
     const days = calculatePeriodDays(localStartDate, localEndDate || new Date());
-    console.log("[addOrUpdatePeriod] days: ", days);
     setPeriods((prevPeriods) => ({
       ...prevPeriods,
       [periodId]: {
@@ -79,9 +76,6 @@ export const PeriodsProvider = ({ children }) => {
         })),
       }
     }));
-
-    // TODO: move this back to calendar
-    // addOrUpdateEvents(days, periodId, flowTypes);
   }
 
   return (
