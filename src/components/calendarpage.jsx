@@ -67,9 +67,7 @@ export function CalendarPage() {
 
   useEffect(() => {
     const updateEvents = () => {
-      console.log('setEvents')
       setEvents(Object.values(periods)?.flatMap(periodToCalendarEvents));
-      console.log('set current period...');
     }
 
     updateEvents();
@@ -104,10 +102,7 @@ export function CalendarPage() {
 
   function findCurrentPeriod() {
     const mostRecentPeriod = findMostRecentPeriod();
-    console.log('mostRecentPeriod:', mostRecentPeriod);
-    console.log('mostRecentPeriod?.endDate:', mostRecentPeriod?.endDate);
-    const endDate = mostRecentPeriod?.endDate;
-    return !endDate ? mostRecentPeriod : null; 
+    return !mostRecentPeriod?.endDate ? mostRecentPeriod : null; 
   }
 
   function addOrUpdateEvents(dates, periodId, flowTypes) {
@@ -150,24 +145,19 @@ export function CalendarPage() {
   }
 
   const openModal = (eventTitle, period) => {
-    // if there is no date then set the start date to the date clicked
-    console.log('setting dialog period to: ', period)
     setDialogPeriod(period);
     setDialogTitle(eventTitle);
     setIsOpen(true);
   }
 
   const onEventClick = ({event}) => {
-    console.log('[onEventClick] event: ', event)
     const periodId = event.extendedProps?.periodId;
-    console.log('[onEventClick] periodId: ', periodId)
     openModal('Updating Period Information', periods[periodId]);
   }
 
   const onDateClick = ({date}) => {
     const potentialNewPeriod = { startDate: formatDate(date) }
     openModal('New Period', potentialNewPeriod);
-    // startNewPeriod(formatDateForCalendar(info.date));
   };
 
   const onPeriodControlChange = (date) => {

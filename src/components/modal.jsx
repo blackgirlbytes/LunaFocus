@@ -12,7 +12,6 @@ export function Modal({children}) {
 
 
 export const DynamicDialog = ({title, dialogContent, onClose}) => {
-  console.log("title: ", title);
   return (
     <div className="p-4">
         <div className="modal modal-open">
