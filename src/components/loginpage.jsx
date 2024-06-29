@@ -16,7 +16,11 @@ export function LoginPage() {
         const user = await Username(web5, userDid);
         await user.createOrUpdateUsernameEntry({ username });
         setUsername(username);
-        router.push('/calendar');
+        if (userType === 'self') {
+          router.push('/calendar');
+        } else if (userType === 'provider') {
+          router.push('/provider');
+        }
       } catch (error) {
         console.error('Error storing username:', error);
       }
