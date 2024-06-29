@@ -34,7 +34,7 @@ export const PeriodDialog = ({ dialogTitle, period, onClose }) => {
   };
 
   const handleClose = () => {
-    onClose(localStartDate, localEndDate, flowTypes);
+    onClose({localStartDate, localEndDate, flowTypes});
   };
 
   const periodDays = localStartDate && localEndDate ? calculatePeriodDays(localStartDate, localEndDate) : [];

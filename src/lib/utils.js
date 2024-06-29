@@ -5,10 +5,14 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs))
 }
 
+function asDate(dateLike) {
+  return (typeof dateLike === 'string') ? stringToDate(dateLike) : dateLike;
+} 
+
 export function calculatePeriodDays(startDate, endDate) {
   // stringToDate ensures these match the day cell date in the UI
-  const start = stringToDate(startDate);
-  const end = stringToDate(endDate);
+  const start = asDate(startDate);
+  const end = asDate(endDate);
   const days = [];
   for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
     days.push(formatDate(d));

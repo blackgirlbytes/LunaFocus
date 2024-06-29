@@ -12,11 +12,9 @@ import { useWeb5 } from '@/context/Web5Context';
 const formatDateForCalendar = (date) => date.toISOString().split('T')[0];
 
 export function CalendarPage() {
-  const [periodStartDate, setPeriodStartDate] = useState(null);
   const [dialogTitle, setDialogTitle] = useState('Dialog');
   const [isOpen, setIsOpen] = useState(false);
   const [dialogPeriod, setDialogPeriod] = useState(null);
-  const [currentPeriod, setCurrentPeriod] = useState(null);
 
   const { web5, userDid } = useWeb5();
 
@@ -71,13 +69,7 @@ export function CalendarPage() {
     const updateEvents = () => {
       console.log('setEvents')
       setEvents(Object.values(periods)?.flatMap(periodToCalendarEvents));
-      const newCurrentPeriod = findCurrentPeriod();
-      console.log('newCurrentPeriod', newCurrentPeriod)
-      setCurrentPeriod(newCurrentPeriod);
       console.log('set current period...');
-      setPeriodStartDate(newCurrentPeriod?.startDate);
-      console.log('setting period start date...');
-  
     }
 
     updateEvents();
@@ -97,8 +89,25 @@ export function CalendarPage() {
   //   openModal('Set Period Dates', periodId);
   // }
 
+  function findMostRecentPeriod() {
+    const periodObjects = [...Object.values(periods)];
+    if (periodObjects.length === 0) return null;
+    if (periodObjects.length === 1) return periodObjects[0];
+    let mostRecentPeriod = periodObjects[0];
+    for (let period of periodObjects) {
+      if (new Date(period.startDate).getTime() > new Date(mostRecentPeriod.startDate).getTime()) {
+        mostRecentPeriod = period;
+      }
+    }
+    return mostRecentPeriod;
+  }
+
   function findCurrentPeriod() {
-    Object.values(periods).find(period => !period.endDate);
+    const mostRecentPeriod = findMostRecentPeriod();
+    console.log('mostRecentPeriod:', mostRecentPeriod);
+    console.log('mostRecentPeriod?.endDate:', mostRecentPeriod?.endDate);
+    const endDate = mostRecentPeriod?.endDate;
+    return !endDate ? mostRecentPeriod : null; 
   }
 
   function addOrUpdateEvents(dates, periodId, flowTypes) {
@@ -115,9 +124,9 @@ export function CalendarPage() {
     ]);
   }
 
-  function addOrUpdatePeriod(localStartDate, localEndDate, flowTypes) {
+  function addOrUpdatePeriod({localStartDate, localEndDate, flowTypes}) {
     const periodId = dialogPeriod?.id || uuidv4();
-    const days = calculatePeriodDays(localStartDate, localEndDate);
+    const days = calculatePeriodDays(localStartDate, localEndDate || new Date());
     setPeriods((prevPeriods) => ({
       ...prevPeriods,
       [periodId]: {
@@ -155,22 +164,20 @@ export function CalendarPage() {
     openModal('Updating Period Information', periods[periodId]);
   }
 
-  const onDateClick = (info) => {
-    console.log('onDateClick: info ', info)
-    const potentialNewPeriod = { startDate: formatDate(info.date) }
+  const onDateClick = ({date}) => {
+    const potentialNewPeriod = { startDate: formatDate(date) }
     openModal('New Period', potentialNewPeriod);
     // startNewPeriod(formatDateForCalendar(info.date));
   };
 
-
   const onPeriodControlChange = (date) => {
     if (date) {
-      startNewPeriod(formatDate(date));
+      onDateClick({date: new Date()})
     } else {
-      openModalFromButton(currentPeriod.id);
+      const currentPeriodWithSuggestedEndDate = {...findCurrentPeriod(), endDate: formatDate(new Date())};
+      openModal('My Period Ended', currentPeriodWithSuggestedEndDate);
     }
   }
-
 
 
   const EventItem = ({ info }) => {
@@ -205,7 +212,7 @@ export function CalendarPage() {
         events={events}
         aspectRatio={1}
       />
-      <CurrentPeriodControl startDate={periodStartDate} onPeriodControlChange={onPeriodControlChange} />
+      <CurrentPeriodControl currentPeriod={findCurrentPeriod()} onPeriodControlChange={onPeriodControlChange} />
       {isOpen && <PeriodDialog dialogTitle={dialogTitle} period={dialogPeriod} onClose={onClose} />}
     </div>
   );
