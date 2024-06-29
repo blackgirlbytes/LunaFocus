@@ -5,7 +5,7 @@ import { useEffect, useState, useMemo } from "react";
 import CurrentPeriodControl from "@/components/current-period-control";
 import { PeriodDialog } from "@/components/period-dialog";
 import { v4 as uuidv4 } from 'uuid';
-import { formatDate, stringToDate, toUTCDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { usePeriods } from '@/context/PeriodContext';
 
 export function CalendarPage() {
@@ -71,19 +71,9 @@ export function CalendarPage() {
   const EventItem = ({ info }) => {
     const { event } = info;
     const flowType = event.extendedProps.flowType;
-    const date = toUTCDate(event.start);
-    const day = date.getDate();
-
-    // Update the daycell
-    const dateString  = formatDate(date);
-    const tdElement = document.querySelector(`td[data-date="${dateString}"]`);
-    tdElement.classList.add('day-with-event');
-
-    // The timestamp on the event is 00:00 GMT but in PST, so it's the previous day. 
-    // Convert it to the GMT date.
     return (
       <div>
-        <div className={"dot flex flex-col justify-center justify-items-center " + flowType}><div>{day}</div></div>
+        <div className={"dot flex flex-col justify-center justify-items-center " + flowType}></div>
       </div>
     );
   };
