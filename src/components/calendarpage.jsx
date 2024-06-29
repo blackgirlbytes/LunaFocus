@@ -5,9 +5,8 @@ import { useEffect, useState, useMemo } from "react";
 import CurrentPeriodControl from "@/components/current-period-control";
 import { PeriodDialog } from "@/components/period-dialog";
 import { v4 as uuidv4 } from 'uuid';
-import PeriodTracker from '@/lib/dwn/period-tracker';
-import { formatDate, stringToDate, toUTCDate, calculatePeriodDays } from "@/lib/utils";
-import { useWeb5 } from '@/context/Web5Context';
+import { formatDate, stringToDate, toUTCDate } from "@/lib/utils";
+import { usePeriods } from '@/context/PeriodContext';
 
 const formatDateForCalendar = (date) => date.toISOString().split('T')[0];
 
@@ -15,38 +14,14 @@ export function CalendarPage() {
   const [dialogTitle, setDialogTitle] = useState('Dialog');
   const [isOpen, setIsOpen] = useState(false);
   const [dialogPeriod, setDialogPeriod] = useState(null);
-
-  const { web5, userDid } = useWeb5();
-
-  const [periods, setPeriods] = useState({});
   const [events, setEvents] = useState([]);
-  const [periodTracker, setPeriodTracker] = useState(null);
+  const { periods, findCurrentPeriod, addOrUpdatePeriod } = usePeriods();
 
-  useEffect(() => {
-    const initialize = async () => {
-      if (web5 && userDid) {
-        let tracker = await PeriodTracker(web5, userDid);
-        setPeriodTracker(tracker);
-      }
-    }
-    
-    initialize();
-  }, [web5, userDid]);
-
-  useEffect(() => {
-    const fetchPeriods = async (periodTracker) => {
-      const fetchedPeriods = await periodTracker.fetchAllPeriodEntries();
-      setPeriods(fetchedPeriods);
-      setEvents(Object.values(fetchedPeriods)?.flatMap(periodToCalendarEvents));
-    };
-
-    if (periodTracker) {      
-      fetchPeriods(periodTracker);
-    }
-  }, [periodTracker]);
 
   const periodToCalendarEvents = (period) => {
+    console.log("[periodToCalendarEvents] period: ", period);
     if (!period.dailyEntries) return [];
+    console.log("[periodToCalendarEvents] not exiting early.");
     return period.dailyEntries.map(day => ({
       date: day.date,
       title: `day-${uuidv4()}`,
@@ -66,12 +41,15 @@ export function CalendarPage() {
   }
 
   useEffect(() => {
+    console.log("periods: ", periods );
     const updateEvents = () => {
-      setEvents(Object.values(periods)?.flatMap(periodToCalendarEvents));
+      const newEvents =  Object.values(periods)?.flatMap(periodToCalendarEvents)
+      console.log("newEvents: ", newEvents );
+      setEvents(newEvents);
     }
 
     updateEvents();
-  }, [])
+  }, [periods])
   
   // function startNewPeriod(startDate) {
   //   const periodId = uuidv4();
@@ -87,23 +65,6 @@ export function CalendarPage() {
   //   openModal('Set Period Dates', periodId);
   // }
 
-  function findMostRecentPeriod() {
-    const periodObjects = [...Object.values(periods)];
-    if (periodObjects.length === 0) return null;
-    if (periodObjects.length === 1) return periodObjects[0];
-    let mostRecentPeriod = periodObjects[0];
-    for (let period of periodObjects) {
-      if (new Date(period.startDate).getTime() > new Date(mostRecentPeriod.startDate).getTime()) {
-        mostRecentPeriod = period;
-      }
-    }
-    return mostRecentPeriod;
-  }
-
-  function findCurrentPeriod() {
-    const mostRecentPeriod = findMostRecentPeriod();
-    return !mostRecentPeriod?.endDate ? mostRecentPeriod : null; 
-  }
 
   function addOrUpdateEvents(dates, periodId, flowTypes) {
     const newOrUpdatedEvents = dates.map((date) => ({
@@ -119,28 +80,10 @@ export function CalendarPage() {
     ]);
   }
 
-  function addOrUpdatePeriod({localStartDate, localEndDate, flowTypes}) {
+
+  function onClose(modalData) {
     const periodId = dialogPeriod?.id || uuidv4();
-    const days = calculatePeriodDays(localStartDate, localEndDate || new Date());
-    setPeriods((prevPeriods) => ({
-      ...prevPeriods,
-      [periodId]: {
-        ...prevPeriods[periodId],
-        id: periodId,
-        startDate: localStartDate,
-        endDate: localEndDate,
-        dailyEntries: days.map(date => ({
-          date: date,
-          flowType: flowTypes[date] || null,
-        })),
-      }
-    }));
-
-    addOrUpdateEvents(days, periodId, flowTypes);
-  }
-
-  function onClose(...args) {
-    addOrUpdatePeriod(...args);
+    addOrUpdatePeriod({...modalData, periodId});
     setIsOpen(false);
   }
 
