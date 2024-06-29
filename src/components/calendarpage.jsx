@@ -132,19 +132,12 @@ export function CalendarPage() {
   const EventItem = ({ info }) => {
     const { event } = info;
     const flowType = event.extendedProps.flowType;
-    const date = toUTCDate(event.start);
-    const day = date.getDate();
-
-    // Update the daycell
-    const dateString  = formatDate(date);
-    const tdElement = document.querySelector(`td[data-date="${dateString}"]`);
-    tdElement.classList.add('day-with-event');
 
     // The timestamp on the event is 00:00 GMT but in PST, so it's the previous day. 
     // Convert it to the GMT date.
     return (
       <div>
-        <div className={"dot flex flex-col justify-center justify-items-center " + flowType}><div>{day}</div></div>
+        <div className={"dot flex flex-col justify-center justify-items-center " + flowType}><div></div></div>
       </div>
     );
   };
