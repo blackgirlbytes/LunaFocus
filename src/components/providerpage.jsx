@@ -21,7 +21,6 @@ export function ProviderPage() {
     useEffect(() => {
         const fetchAndSetEvents = async (periodTracker) => {
             const entries = await periodTracker.fetchEntriesFromSender(userDid);
-            console.log(entries)
             setEntries(entries);
 
         };
