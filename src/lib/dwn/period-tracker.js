@@ -33,6 +33,7 @@ const PeriodTracker = async function(web5, userDid) {
     } else {
         console.log('Period entry created successfully:', record, await record.data.text());
     }
+    return status;
   }
 
   async function updatePeriodEntry(updatedPeriod) {
@@ -49,6 +50,7 @@ const PeriodTracker = async function(web5, userDid) {
     delete toWrite.recordId; // Don't include the recordId in the data to write
     const {status} = await record.update({ data: updatedPeriod });
     console.log('[updatePeriodEntry] update status: ', status);
+    return status;
   }
 
   async function tryLookupEntry({id}) {
@@ -67,7 +69,10 @@ const PeriodTracker = async function(web5, userDid) {
     } catch (e) {
       console.error(`caught error for ${id}: `, e)
     }
+  }
 
+  async function addOrUpdatePeriodEntry(period) {
+    return period.recordId ? await updatePeriodEntry(period) : await createPeriodEntry(period);
   }
 
   async function fetchAllPeriodEntries() {
@@ -88,14 +93,11 @@ const PeriodTracker = async function(web5, userDid) {
       const data = await record.data.json()
       return {...data, recordId: record.id};
     }));
-    console.log("entries: ", entries)
-    console.log("record ids: ", records.map(record => record.id))
-    await entries.forEach(tryLookupEntry)
-    await records.forEach(tryLookupEntry)
     return entries;
   }
 
   return {
+    addOrUpdatePeriodEntry,
     createPeriodEntry,
     updatePeriodEntry,
     fetchAllPeriodEntries

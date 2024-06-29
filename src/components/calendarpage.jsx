@@ -122,19 +122,22 @@ export function CalendarPage() {
   function addOrUpdatePeriod({localStartDate, localEndDate, flowTypes}) {
     const periodId = dialogPeriod?.id || uuidv4();
     const days = calculatePeriodDays(localStartDate, localEndDate || new Date());
+    const newOrUpdatedPeriod = {
+      ...periods[periodId],
+      id: periodId,
+      startDate: localStartDate,
+      endDate: localEndDate,
+      dailyEntries: days.map(date => ({
+        date: date,
+        flowType: flowTypes[date] || null,
+      })),
+    };
     setPeriods((prevPeriods) => ({
       ...prevPeriods,
-      [periodId]: {
-        ...prevPeriods[periodId],
-        id: periodId,
-        startDate: localStartDate,
-        endDate: localEndDate,
-        dailyEntries: days.map(date => ({
-          date: date,
-          flowType: flowTypes[date] || null,
-        })),
-      }
+      [periodId]: newOrUpdatedPeriod
     }));
+
+    periodTracker.addOrUpdatePeriodEntry(newOrUpdatedPeriod)
 
     addOrUpdateEvents(days, periodId, flowTypes);
   }
